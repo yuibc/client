@@ -9,8 +9,8 @@ export const siteConfig = {
       href: "/featured",
     },
     {
-      label: "Artists",
-      href: "/artists",
+      label: "Creators",
+      href: "/creators",
     },
     {
       label: "Explore",
