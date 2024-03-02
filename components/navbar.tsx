@@ -18,9 +18,13 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon, HeartFilledIcon, SearchIcon } from "@/components/icons";
-
-import { Logo, WalletLoginIcon } from "@/components/icons";
+import {
+  GithubIcon,
+  Logo,
+  WalletLoginIcon,
+  SearchIcon,
+  CartIcon,
+} from "@/components/icons";
 
 export const Navbar = () => {
   const searchInput = (
@@ -40,7 +44,7 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar maxWidth="full" position="sticky">
+    <NextUINavbar maxWidth="2xl" position="sticky" height="90px">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -48,13 +52,13 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">YUI</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden lg:flex gap-5 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-semibold",
+                  "data-[active=true]:text-primary data-[active=true]:font-semibold font-semibold",
                 )}
                 color="foreground"
                 href={item.href}
@@ -78,9 +82,10 @@ export const Navbar = () => {
           <Button
             isExternal
             as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
+            size="md"
+            className="text-sm font-semibold text-default-600 bg-default-100"
             href="/login"
-            startContent={<WalletLoginIcon />}
+            startContent={<WalletLoginIcon width={30} />}
             variant="flat"
           >
             Login
@@ -89,9 +94,11 @@ export const Navbar = () => {
         <NavbarItem className="hidden md:flex">
           <Button
             isExternal
+            isIconOnly
+            size="md"
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-100"
-            startContent=""
+            startContent={<CartIcon width={30} />}
             variant="flat"
           />
         </NavbarItem>
