@@ -19,3 +19,8 @@ export type SectionProps = {
   header: string;
   icon: ReactNode;
 };
+
+export type FooterSubscriptionProps = {
+  subscriptionTitle: string;
+  communityTitle: string;
+};
