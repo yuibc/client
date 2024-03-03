@@ -85,7 +85,7 @@ export const Navbar = () => {
             size="md"
             className="text-sm font-semibold text-default-600 bg-default-100"
             href="/login"
-            startContent={<WalletLoginIcon width={30} />}
+            startContent={<WalletLoginIcon />}
             variant="flat"
           >
             Login
@@ -98,7 +98,7 @@ export const Navbar = () => {
             size="md"
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-100"
-            startContent={<CartIcon width={30} />}
+            startContent={<CartIcon />}
             variant="flat"
           />
         </NavbarItem>

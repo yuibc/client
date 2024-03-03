@@ -49,7 +49,7 @@ export const ArtBlock = ({
             size="md"
             className="text-sm font-semibold text-default-600 bg-default-100"
             href="/login"
-            startContent={<CartIcon width={30} />}
+            startContent={<CartIcon />}
             variant="flat"
           />
         </div>
