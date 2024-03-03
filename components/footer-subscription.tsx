@@ -1,5 +1,5 @@
 import { Input, Link, Button } from "@nextui-org/react";
-import { IcBaselineEmailIcon } from "./icons";
+import { IcBaselineEmailIcon, MingcuteUserFollowFillIcon } from "./icons";
 import { FooterSubscriptionProps } from "@/types";
 import { communityLinks } from "@/config/link";
 
@@ -27,8 +27,8 @@ export const FooterSubscription = ({
             as={Link}
             size="md"
             className="text-sm font-semibold text-default-600 bg-default-100"
-            href="/login"
-            startContent=""
+            href="/"
+            startContent={<MingcuteUserFollowFillIcon />}
             variant="flat"
           >
             Sign up
