@@ -8,15 +8,15 @@ export const FooterSubscription = ({
   communityTitle,
 }: Partial<FooterSubscriptionProps>) => {
   return (
-    <div className="flex justify-between items-start w-full">
-      <div className="flex flex-col items-start">
+    <div className="grid grid-cols-6 w-full">
+      <div className="flex flex-col items-start col-span-4">
         <h2 className="text-2xl font-semibold">{subscriptionTitle}</h2>
         <div className="flex justify-center items-center gap-2">
           <Input
             aria-label="Email address"
             classNames={{
               inputWrapper: "bg-default-100",
-              input: "text-sm xl:w-[535px] lg:w-[535px] md:[355px]",
+              input: "text-sm xl:w-[435px] lg:w-[435px] md:[255px]",
             }}
             labelPlacement="outside"
             placeholder="Email address"
@@ -35,7 +35,7 @@ export const FooterSubscription = ({
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col justify-start items-start col-span-2">
         <h2 className="text-2xl font-semibold">{communityTitle}</h2>
         <div className="flex justify-center items-center gap-2">
           {communityLinks.map((link) => (
