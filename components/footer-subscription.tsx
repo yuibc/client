@@ -8,7 +8,7 @@ export const FooterSubscription = ({
   communityTitle,
 }: Partial<FooterSubscriptionProps>) => {
   return (
-    <div className="grid grid-cols-6 w-full">
+    <div className="grid grid-cols-6 w-full pb-12">
       <div className="flex flex-col items-start col-span-4">
         <h2 className="text-2xl font-semibold">{subscriptionTitle}</h2>
         <div className="flex justify-center items-center gap-2">
