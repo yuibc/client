@@ -353,6 +353,28 @@ export const MingcuteUserFollowFillIcon: React.FC<IconSvgProps> = ({
   );
 };
 
+export const FluentFilter24FilledIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size || width}
+      height={size || height}
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="#a889ff"
+        d="M10 16h4a1 1 0 0 1 .117 1.993L14 18h-4a1 1 0 0 1-.117-1.993zh4zm-2-5h8a1 1 0 0 1 .117 1.993L16 13H8a1 1 0 0 1-.117-1.993zh8zM5 6h14a1 1 0 0 1 .117 1.993L19 8H5a1 1 0 0 1-.117-1.993zh14z"
+      ></path>
+    </svg>
+  );
+};
+
 export const FlowbiteUsersSolidIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,

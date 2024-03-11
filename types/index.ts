@@ -18,6 +18,9 @@ export type TArtBlock = ArtBlockProps;
 export type SectionProps = {
   header: string;
   icon: ReactNode;
+  children: ReactNode;
+  hasFilter: boolean;
+  onClick: () => void;
 };
 
 export type FooterSubscriptionProps = {
@@ -31,3 +34,5 @@ export type CreatorBlockProps = {
   followerCount: number;
   onFollow: () => void;
 };
+
+export type TCreator = CreatorBlockProps;
