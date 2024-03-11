@@ -18,7 +18,12 @@ export default function Creators() {
         </div>
       </div>
       <hr className="my-10 border-default-50" />
-      <SectionContent header="Creators" icon={<FaSolidUsersIcon />} hasFilter>
+      <SectionContent
+        header="Creators"
+        icon={<FaSolidUsersIcon />}
+        hasFilter
+        gridSize={4}
+      >
         {fixedCreators.map((item, index) => (
           <CreatorBlock
             key={index}
