@@ -13,7 +13,7 @@ export const CreatorBlock = ({
     total > 1000 ? `${total * 0.001}k` : total;
 
   return (
-    <div className="flex justify-evenly items-center gap-3 border-1 border-default-100 rounded-md p-4">
+    <div className="flex justify-evenly items-center gap-3 border-1 border-default-100 rounded-md p-5">
       <div>
         <Avatar
           name={displayName}
