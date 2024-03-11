@@ -24,3 +24,10 @@ export type FooterSubscriptionProps = {
   subscriptionTitle: string;
   communityTitle: string;
 };
+
+export type CreatorBlockProps = {
+  avatarUrl: string;
+  displayName: string;
+  followerCount: number;
+  onFollow: () => void;
+};
