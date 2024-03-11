@@ -8,7 +8,11 @@ import { fixedArts } from "@/config/fixed-data";
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center w-full gap-y-5">
-      <SectionContent header="TOP Trending" icon={<GgTrendingIcon />}>
+      <SectionContent
+        header="TOP Trending"
+        icon={<GgTrendingIcon />}
+        gridSize={5}
+      >
         {fixedArts.map((item, index) => (
           <ArtBlock
             key={index}
@@ -21,7 +25,11 @@ export default function Home() {
           />
         ))}
       </SectionContent>
-      <SectionContent header="TOP Creation" icon={<MdiCreationIcon />}>
+      <SectionContent
+        header="TOP Creation"
+        icon={<MdiCreationIcon />}
+        gridSize={5}
+      >
         {fixedArts.map((item, index) => (
           <ArtBlock
             key={index}
