@@ -46,37 +46,37 @@ export const fixedArts: TArtBlock[] = [
 export const fixedCreators: TCreator[] = [
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@LTRFZzMket",
     followerCount: 100,
     onFollow: () => {},
   },
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@YbrNLicXBV",
     followerCount: 100,
     onFollow: () => {},
   },
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@loXuBidpAY",
     followerCount: 100,
     onFollow: () => {},
   },
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@kEPmNTIurq",
     followerCount: 100,
     onFollow: () => {},
   },
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@RbiujfxBMA",
     followerCount: 100,
     onFollow: () => {},
   },
   {
     avatarUrl: "",
-    displayName: "@",
+    displayName: "@IYnGScPXKO",
     followerCount: 100,
     onFollow: () => {},
   },
