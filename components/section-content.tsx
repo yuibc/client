@@ -32,7 +32,7 @@ export const SectionContent = ({
           </Button>
         )}
       </div>
-      <div className="flex gap-5 w-full">{children}</div>
+      <div className="grid grid-cols-5 gap-5">{children}</div>
       <div className="flex justify-end">
         <Link className="text-md font-semibold cursor-pointer">See more</Link>
       </div>
