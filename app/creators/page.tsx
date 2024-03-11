@@ -1,6 +1,7 @@
 import { CreatorBlock } from "@/components/creator-block";
 import { FaSolidUsersIcon, MingcuteUserStarFillIcon } from "@/components/icons";
 import { SectionContent } from "@/components/section-content";
+import { fixedCreators } from "@/config/fixed-data";
 
 export default function Creators() {
   return (
@@ -17,7 +18,15 @@ export default function Creators() {
         </div>
       </div>
       <hr className="my-10 border-default-50" />
-      <SectionContent header="Creators" icon={<FaSolidUsersIcon />} />
+      <SectionContent header="Creators" icon={<FaSolidUsersIcon />} hasFilter>
+        {fixedCreators.map((item, index) => (
+          <CreatorBlock
+            key={index}
+            displayName={item.displayName}
+            followerCount={item.followerCount}
+          />
+        ))}
+      </SectionContent>
     </section>
   );
 }

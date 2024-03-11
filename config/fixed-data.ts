@@ -1,4 +1,4 @@
-import { TArtBlock } from "@/types";
+import { TArtBlock, TCreator } from "@/types";
 
 export const fixedArts: TArtBlock[] = [
   {
@@ -40,5 +40,44 @@ export const fixedArts: TArtBlock[] = [
     cryptoCurrency: "SOL",
     convertedPrice: 97,
     currency: "$",
+  },
+];
+
+export const fixedCreators: TCreator[] = [
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
+  },
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
+  },
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
+  },
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
+  },
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
+  },
+  {
+    avatarUrl: "",
+    displayName: "@",
+    followerCount: 100,
+    onFollow: () => {},
   },
 ];
