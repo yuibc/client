@@ -20,6 +20,7 @@ export type SectionProps = {
   icon: ReactNode;
   children: ReactNode;
   hasFilter: boolean;
+  gridSize: 3 | 4 | 5;
   onClick: () => void;
 };
 

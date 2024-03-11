@@ -1,12 +1,14 @@
 import { SectionProps } from "@/types";
 import { Button, Link } from "@nextui-org/react";
 import { FluentFilter24FilledIcon } from "./icons";
+import clsx from "clsx";
 
 export const SectionContent = ({
   header,
   icon,
   children,
   hasFilter,
+  gridSize,
   onClick,
 }: Partial<SectionProps>) => {
   return (
@@ -32,7 +34,16 @@ export const SectionContent = ({
           </Button>
         )}
       </div>
-      <div className="grid grid-cols-5 gap-5">{children}</div>
+      <div
+        className={clsx(
+          "grid gap-5",
+          { "grid-cols-3": gridSize === 3 },
+          { "grid-cols-4": gridSize === 4 },
+          { "grid-cols-5": gridSize === 5 },
+        )}
+      >
+        {children}
+      </div>
       <div className="flex justify-end">
         <Link className="text-md font-semibold cursor-pointer">See more</Link>
       </div>
