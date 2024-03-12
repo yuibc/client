@@ -18,6 +18,10 @@ export type TArtBlock = ArtBlockProps;
 export type SectionProps = {
   header: string;
   icon: ReactNode;
+  children: ReactNode;
+  hasFilter: boolean;
+  gridSize: 3 | 4 | 5;
+  onClick: () => void;
 };
 
 export type FooterSubscriptionProps = {
