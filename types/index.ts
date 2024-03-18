@@ -1,3 +1,4 @@
+import { RadioProps } from '@nextui-org/react';
 import { ReactNode, SVGProps } from 'react';
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -38,11 +39,28 @@ export type CreatorBlockProps = {
 
 export type TCreator = CreatorBlockProps;
 
-export type CartDrawerProps = {};
+export type CartDrawerProps = {
+    title: string;
+    isOpen: boolean;
+    onClose: () => void;
+};
 
 export type LoginPopupProps = {
     title: string;
     isOpen: boolean;
     onOpen: () => void;
     onConnect: () => void;
+};
+
+export type CartItemProps = {
+    title: string;
+    author: string;
+    cryptoPrice: number;
+    convertedPrice: number;
+    currency: string;
+    cryptoCurrency: string;
+};
+
+export type CartItemV2Props = CartItemProps & {
+    value: string;
 };
