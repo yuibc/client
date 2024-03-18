@@ -28,9 +28,13 @@ import {
 } from '@/components/icons';
 import { LoginPopup } from './login-popup';
 import { useState } from 'react';
+import { CartDrawer } from './cart-drawer';
+import { Badge } from '@nextui-org/react';
 
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
+
     const searchInput = (
         <Input
             aria-label="Search"
@@ -97,15 +101,18 @@ export const Navbar = () => {
                     </Button>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
-                    <Button
-                        isExternal
-                        isIconOnly
-                        size="md"
-                        as={Link}
-                        className="text-sm font-normal text-default-600 bg-default-100"
-                        startContent={<CartIcon />}
-                        variant="flat"
-                    />
+                    <Badge content="1" color="danger">
+                        <Button
+                            isExternal
+                            isIconOnly
+                            size="md"
+                            as={Link}
+                            onPress={() => setDrawerOpen(true)}
+                            className="text-sm font-normal text-default-600 bg-default-100"
+                            startContent={<CartIcon />}
+                            variant="flat"
+                        />
+                    </Badge>
                 </NavbarItem>
                 <NavbarItem className="hidden sm:flex gap-2">
                     <ThemeSwitch />
@@ -116,6 +123,12 @@ export const Navbar = () => {
                 title="Log in or sign up as email"
                 isOpen={isLoginOpen}
                 onOpen={() => setLoginPopup(false)}
+            />
+
+            <CartDrawer
+                title="Your Cart"
+                isOpen={isDrawerOpen}
+                onClose={() => setDrawerOpen(false)}
             />
 
             <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
