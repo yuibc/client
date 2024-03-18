@@ -37,3 +37,10 @@ export type CreatorBlockProps = {
 };
 
 export type TCreator = CreatorBlockProps;
+
+export type LoginPopupProps = {
+  title: string;
+  isOpen: boolean;
+  onOpen: () => void;
+  onConnect: () => void;
+};
