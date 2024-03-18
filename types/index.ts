@@ -37,3 +37,5 @@ export type CreatorBlockProps = {
 };
 
 export type TCreator = CreatorBlockProps;
+
+export type CartDrawerProps = {};
