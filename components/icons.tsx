@@ -445,3 +445,36 @@ export const FaSolidUsersIcon: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
+
+export const ParkSolidConnectIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size || width}
+      height={size || height}
+      viewBox="0 0 48 48"
+      {...props}
+    >
+      <g
+        fill="none"
+        stroke="#a889ff"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={4}
+      >
+        <path
+          fill="#a889ff"
+          fillRule="evenodd"
+          d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8m2 30a6 6 0 1 0 0-12a6 6 0 0 0 0 12m28 2a6 6 0 1 0 0-12a6 6 0 0 0 0 12M22 28a8 8 0 1 0 0-16a8 8 0 0 0 0 16m12-16a4 4 0 1 0 0-8a4 4 0 0 0 0 8"
+          clipRule="evenodd"
+        ></path>
+        <path d="m11 11l4 4m15-3l-2 2m6 19.5L28 26m-14 5l4-4"></path>
+      </g>
+    </svg>
+  );
+};
