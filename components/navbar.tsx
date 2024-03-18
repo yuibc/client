@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -25,8 +26,11 @@ import {
   SearchIcon,
   CartIcon,
 } from "@/components/icons";
+import { LoginPopup } from "./login-popup";
+import { useState } from "react";
 
 export const Navbar = () => {
+  const [isLoginOpen, setLoginPopup] = useState(false);
   const searchInput = (
     <Input
       aria-label="Search"
@@ -84,8 +88,8 @@ export const Navbar = () => {
             as={Link}
             size="md"
             className="text-sm font-semibold text-default-600 bg-default-100"
-            href="/login"
             startContent={<WalletLoginIcon />}
+            onPress={() => setLoginPopup(true)}
             variant="flat"
           >
             Login
@@ -106,6 +110,12 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
       </NavbarContent>
+
+      <LoginPopup
+        title="Log in or sign up as email"
+        isOpen={isLoginOpen}
+        onOpen={() => setLoginPopup(false)}
+      />
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link isExternal href={siteConfig.links.github} aria-label="Github">
