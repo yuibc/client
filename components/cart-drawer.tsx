@@ -1,7 +1,7 @@
 import { CartDrawerProps } from '@/types';
 import { Button } from '@nextui-org/button';
 import { SolarTrashBinTrashBoldIcon, WalletLoginIcon } from './icons';
-import { CheckboxGroup, Divider, Radio, RadioGroup } from '@nextui-org/react';
+import { CheckboxGroup, Divider, RadioGroup } from '@nextui-org/react';
 import { CartItemV2 } from './cart-item-v2';
 import { useState } from 'react';
 import { RadioV2 } from './radio-v2';
