@@ -75,3 +75,9 @@ export type UserDropdownProps = {
 export type EmptyProps = {
     description: string;
 };
+
+export type PostModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onPost: () => void;
+};
