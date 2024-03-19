@@ -531,3 +531,67 @@ export const SolarTrashBinTrashBoldIcon: React.FC<IconSvgProps> = ({
         </svg>
     );
 };
+
+export const IconamoonProfileCircleFill: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                fillRule="evenodd"
+                d="M12 4a8 8 0 0 0-6.96 11.947A4.99 4.99 0 0 1 9 14h6a4.99 4.99 0 0 1 3.96 1.947A8 8 0 0 0 12 4m7.943 14.076A9.959 9.959 0 0 0 22 12c0-5.523-4.477-10-10-10S2 6.477 2 12a9.958 9.958 0 0 0 2.057 6.076l-.005.018l.355.413A9.98 9.98 0 0 0 12 22a9.947 9.947 0 0 0 5.675-1.765a10.055 10.055 0 0 0 1.918-1.728l.355-.413zM12 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6"
+                clipRule="evenodd"></path>
+        </svg>
+    );
+};
+
+export const IcRoundDashboardIcon: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1m0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1m10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1M13 4v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1"></path>
+        </svg>
+    );
+};
+
+export const LetsIconsSignOutSqureFill: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                fillRule="evenodd"
+                d="m8.379 2.669l3.69-.58c3.22-.506 4.83-.76 5.88.139C19 3.126 19 4.756 19 8.016V11h-5.92l2.7-3.376l-1.56-1.25l-4 5l-.5.626l.5.624l4 5l1.56-1.25L13.08 13H19v2.983c0 3.26 0 4.89-1.05 5.788c-1.05.898-2.66.645-5.881.14l-3.69-.58c-1.613-.254-2.419-.38-2.899-.942C5 19.828 5 19.012 5 17.38V6.62c0-1.632 0-2.449.48-3.01c.48-.561 1.286-.688 2.899-.941"
+                clipRule="evenodd"></path>
+        </svg>
+    );
+};
