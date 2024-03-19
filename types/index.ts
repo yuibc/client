@@ -1,4 +1,3 @@
-import { RadioProps } from '@nextui-org/react';
 import { ReactNode, SVGProps } from 'react';
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -12,6 +11,7 @@ export type ArtBlockProps = {
     convertedPrice: number;
     cryptoCurrency: string;
     currency: string;
+    isDashboardItem: boolean;
 };
 
 export type TArtBlock = ArtBlockProps;
