@@ -23,6 +23,7 @@ export type SectionProps = {
     hasFilter: boolean;
     gridSize: 3 | 4 | 5;
     onClick: () => void;
+    limited: boolean;
 };
 
 export type FooterSubscriptionProps = {
