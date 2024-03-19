@@ -35,6 +35,8 @@ export type CreatorBlockProps = {
     displayName: string;
     followerCount: number;
     onFollow: () => void;
+    noFollowButton: boolean;
+    borderless: boolean;
 };
 
 export type TCreator = CreatorBlockProps;
@@ -63,4 +65,8 @@ export type CartItemProps = {
 
 export type CartItemV2Props = CartItemProps & {
     value: string;
+};
+
+export type UserDropdownProps = {
+    displayName: string;
 };
