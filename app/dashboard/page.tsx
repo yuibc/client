@@ -1,5 +1,6 @@
 'use client';
 import { ArtBlock } from '@/components/art-block';
+import { Empty } from '@/components/empty';
 import { SectionContent } from '@/components/section-content';
 import { Button, Tab, Tabs } from '@nextui-org/react';
 
@@ -13,9 +14,11 @@ export default function ArtworkManagement() {
                     </Button>
                 </span>
             </div>
-            <hr className="my-10 border-default-50" />
             <div className="flex w-full flex-col">
-                <Tabs size="lg" variant="underlined">
+                <Tabs
+                    size="lg"
+                    variant="underlined"
+                    className="border-b border-default-50 py-7">
                     <Tab key="work" title="Work (4/30)">
                         <SectionContent gridSize={5} header="Your creations">
                             <ArtBlock isDashboardItem />
@@ -24,8 +27,12 @@ export default function ArtworkManagement() {
                             <ArtBlock isDashboardItem />
                         </SectionContent>
                     </Tab>
-                    <Tab key="purchased" title="Purchased"></Tab>
-                    <Tab key="bookmark" title="Bookmark"></Tab>
+                    <Tab key="purchased" title="Purchased">
+                        <Empty description="You haven't bought anything yet!" />
+                    </Tab>
+                    <Tab key="bookmark" title="Bookmark">
+                        <Empty description="You haven't save any artwork!" />
+                    </Tab>
                 </Tabs>
             </div>
         </section>
