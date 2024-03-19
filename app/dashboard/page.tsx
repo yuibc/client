@@ -15,14 +15,13 @@ export default function ArtworkManagement() {
             </div>
             <hr className="my-10 border-default-50" />
             <div className="flex w-full flex-col">
-                <Tabs>
-                    <Tab key="work" title="Work">
+                <Tabs size="lg" variant="underlined">
+                    <Tab key="work" title="Work (4/30)">
                         <SectionContent gridSize={5} header="Your creations">
-                            <ArtBlock />
-                            <ArtBlock />
-                            <ArtBlock />
-                            <ArtBlock />
-                            <ArtBlock />
+                            <ArtBlock isDashboardItem />
+                            <ArtBlock isDashboardItem />
+                            <ArtBlock isDashboardItem />
+                            <ArtBlock isDashboardItem />
                         </SectionContent>
                     </Tab>
                     <Tab key="purchased" title="Purchased"></Tab>
