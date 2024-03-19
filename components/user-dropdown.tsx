@@ -1,4 +1,3 @@
-import { userDropdown } from '@/config/fixed-data';
 import { UserDropdownProps } from '@/types';
 import {
     Button,
@@ -27,7 +26,7 @@ export const UserDropdown = ({ displayName }: Partial<UserDropdownProps>) => {
                     {displayName}
                 </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Dynamic Actions" items={userDropdown}>
+            <DropdownMenu aria-label="Dynamic Actions">
                 <DropdownItem>
                     <CreatorBlock
                         displayName={displayName}
