@@ -9,6 +9,7 @@ export default function Home() {
     return (
         <section className="flex flex-col items-center justify-center w-full gap-y-5">
             <SectionContent
+                limited
                 header="TOP Trending"
                 icon={<GgTrendingIcon />}
                 gridSize={5}>
@@ -25,6 +26,7 @@ export default function Home() {
                 ))}
             </SectionContent>
             <SectionContent
+                limited
                 header="TOP Creation"
                 icon={<MdiCreationIcon />}
                 gridSize={5}>
