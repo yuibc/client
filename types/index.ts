@@ -71,3 +71,7 @@ export type CartItemV2Props = CartItemProps & {
 export type UserDropdownProps = {
     displayName: string;
 };
+
+export type EmptyProps = {
+    description: string;
+};
