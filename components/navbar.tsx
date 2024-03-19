@@ -6,7 +6,6 @@ import {
     NavbarMenuToggle,
     NavbarBrand,
     NavbarItem,
-    NavbarMenuItem,
 } from '@nextui-org/navbar';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
@@ -30,10 +29,12 @@ import { LoginPopup } from './login-popup';
 import { useState } from 'react';
 import { CartDrawer } from './cart-drawer';
 import { Badge } from '@nextui-org/react';
+import { UserDropdown } from './user-dropdown';
 
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
+    const enabled = true;
 
     const searchInput = (
         <Input
@@ -89,16 +90,20 @@ export const Navbar = () => {
 
             <NavbarContent className="hidden sm:flex basis-1 sm:basis-full">
                 <NavbarItem className="hidden md:flex">
-                    <Button
-                        isExternal
-                        as={Link}
-                        size="md"
-                        className="text-sm font-semibold text-default-600 bg-default-100"
-                        startContent={<WalletLoginIcon />}
-                        onPress={() => setLoginPopup(true)}
-                        variant="flat">
-                        Login
-                    </Button>
+                    {enabled ? (
+                        <UserDropdown displayName="@adudarkwa" />
+                    ) : (
+                        <Button
+                            isExternal
+                            as={Link}
+                            size="md"
+                            className="text-sm font-semibold text-default-600 bg-default-100"
+                            startContent={<WalletLoginIcon />}
+                            onPress={() => setLoginPopup(true)}
+                            variant="flat">
+                            Login
+                        </Button>
+                    )}
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
                     <Badge content="1" color="danger">
@@ -142,28 +147,7 @@ export const Navbar = () => {
                 <NavbarMenuToggle />
             </NavbarContent>
 
-            <NavbarMenu>
-                {searchInput}
-                <div className="mx-4 mt-2 flex flex-col gap-2">
-                    {siteConfig.navMenuItems.map((item, index) => (
-                        <NavbarMenuItem key={`${item}-${index}`}>
-                            <Link
-                                color={
-                                    index === 2
-                                        ? 'primary'
-                                        : index ===
-                                            siteConfig.navMenuItems.length - 1
-                                          ? 'danger'
-                                          : 'foreground'
-                                }
-                                href="#"
-                                size="lg">
-                                {item.label}
-                            </Link>
-                        </NavbarMenuItem>
-                    ))}
-                </div>
-            </NavbarMenu>
+            <NavbarMenu>{searchInput}</NavbarMenu>
         </NextUINavbar>
     );
 };

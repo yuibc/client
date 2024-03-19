@@ -10,6 +10,7 @@ export const SectionContent = ({
     hasFilter,
     gridSize,
     onClick,
+    limited,
 }: Partial<SectionProps>) => {
     return (
         <div className="flex flex-col gap-3 w-full mb-5">
@@ -42,11 +43,13 @@ export const SectionContent = ({
                 )}>
                 {children}
             </div>
-            <div className="flex justify-end">
-                <Link className="text-md font-semibold cursor-pointer">
-                    See more
-                </Link>
-            </div>
+            {limited && (
+                <div className="flex justify-end">
+                    <Link className="text-md font-semibold cursor-pointer">
+                        See more
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };

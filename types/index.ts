@@ -1,4 +1,3 @@
-import { RadioProps } from '@nextui-org/react';
 import { ReactNode, SVGProps } from 'react';
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -12,6 +11,7 @@ export type ArtBlockProps = {
     convertedPrice: number;
     cryptoCurrency: string;
     currency: string;
+    isDashboardItem: boolean;
 };
 
 export type TArtBlock = ArtBlockProps;
@@ -23,6 +23,7 @@ export type SectionProps = {
     hasFilter: boolean;
     gridSize: 3 | 4 | 5;
     onClick: () => void;
+    limited: boolean;
 };
 
 export type FooterSubscriptionProps = {
@@ -35,6 +36,8 @@ export type CreatorBlockProps = {
     displayName: string;
     followerCount: number;
     onFollow: () => void;
+    noFollowButton: boolean;
+    borderless: boolean;
 };
 
 export type TCreator = CreatorBlockProps;
@@ -63,4 +66,18 @@ export type CartItemProps = {
 
 export type CartItemV2Props = CartItemProps & {
     value: string;
+};
+
+export type UserDropdownProps = {
+    displayName: string;
+};
+
+export type EmptyProps = {
+    description: string;
+};
+
+export type PostModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onPost: () => void;
 };

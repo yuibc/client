@@ -1,19 +1,24 @@
 import { CreatorBlockProps } from '@/types';
 import { Avatar, Button } from '@nextui-org/react';
 import { FlowbiteUsersSolidIcon } from './icons';
-import { useCallback } from 'react';
+import clsx from 'clsx';
 
 export const CreatorBlock = ({
     avatarUrl,
     displayName,
     followerCount,
     onFollow,
+    noFollowButton,
+    borderless,
 }: Partial<CreatorBlockProps>) => {
     const formatThousand = (total: number) =>
         total > 1000 ? `${total * 0.001}k` : total;
 
     return (
-        <div className="flex justify-evenly items-center gap-3 border-1 border-default-100 rounded-md p-5">
+        <div
+            className={clsx(
+                'flex justify-evenly items-center gap-3 border-1 border-default-100 rounded-md p-5',
+            )}>
             <div>
                 <Avatar
                     name={displayName}
@@ -29,9 +34,11 @@ export const CreatorBlock = ({
                         {formatThousand(followerCount as number)} Followers
                     </h5>
                 </span>
-                <Button title="Follow" onClick={onFollow} variant="flat">
-                    Follow
-                </Button>
+                {!noFollowButton && (
+                    <Button title="Follow" onClick={onFollow} variant="flat">
+                        Follow
+                    </Button>
+                )}
             </div>
         </div>
     );
