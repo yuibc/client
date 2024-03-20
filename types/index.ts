@@ -81,3 +81,9 @@ export type PostModalProps = {
     onClose: () => void;
     onPost: () => void;
 };
+
+export type TAuth = {
+    email: string;
+    walletAddress: string;
+    password: string;
+};
