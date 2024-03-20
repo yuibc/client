@@ -26,15 +26,31 @@ import {
     CartIcon,
 } from '@/components/icons';
 import { LoginPopup } from './login-popup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
 import { Badge } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
+import { useUser } from '@/services';
+import { TUser } from '@/types';
 
 export const Navbar = () => {
+    const isAuth = localStorage.getItem('Access-Token') !== null;
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const enabled = true;
+    const [userInfo, setUserInfo] = useState<Partial<Omit<TUser, 'password'>>>(
+        {},
+    );
+    const { findById } = useUser('');
+
+    const fetchUserInfo = async () => {
+        const id = localStorage.getItem('User') || '';
+        const user = (await findById(id)) as Omit<TUser, 'password'>;
+        setUserInfo(user);
+    };
+
+    useEffect(() => {
+        fetchUserInfo();
+    }, []);
 
     const searchInput = (
         <Input
@@ -90,8 +106,8 @@ export const Navbar = () => {
 
             <NavbarContent className="hidden sm:flex basis-1 sm:basis-full">
                 <NavbarItem className="hidden md:flex">
-                    {enabled ? (
-                        <UserDropdown displayName="@adudarkwa" />
+                    {isAuth ? (
+                        <UserDropdown displayName={userInfo.displayName} />
                     ) : (
                         <Button
                             isExternal
