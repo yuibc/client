@@ -90,4 +90,7 @@ export type TAuth = {
 
 export type TUser = {
     email: string;
+    password: string;
+    displayName: string;
+    walletAddress: string;
 };
