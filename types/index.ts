@@ -87,3 +87,7 @@ export type TAuth = {
     walletAddress: string;
     password: string;
 };
+
+export type TUser = {
+    email: string;
+};
