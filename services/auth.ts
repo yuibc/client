@@ -1,6 +1,6 @@
 import { TAuth } from '@/types';
 
-export function useAuth() {
+export function useAuth(url: string) {
     const authenticate = async ({
         email,
         password,
@@ -8,11 +8,12 @@ export function useAuth() {
     }: Partial<TAuth>) => {
         try {
             const accessToken = localStorage.getItem('Access-Token') || '';
-            const res = await fetch(`${process.env.YUI_SERVER}/auth`, {
+            const res = await fetch(`${url}/auth`, {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
                 headers: {
                     accept: 'application/json',
+                    'content-type': 'application/json',
                     authorization: `Bearer ${accessToken}`,
                 },
             });
