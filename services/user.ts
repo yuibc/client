@@ -1,14 +1,14 @@
 import { TUser } from '@/types';
 
-export function useUser() {
-    const create = async ({ email }: Partial<TUser>) => {
+export function useUser(url: string) {
+    const create = async ({ email, password, displayName }: Partial<TUser>) => {
         try {
-            const res = await fetch(`${process.env.YUI_SERVER}/user`, {
+            const res = await fetch(`${url}/user`, {
                 method: 'POST',
-                body: JSON.stringify({ email }),
                 headers: {
-                    accept: 'application/json',
+                    'content-type': 'application/json',
                 },
+                body: JSON.stringify({ email, password, displayName }),
             });
             console.log(await res.text());
         } catch (e) {
@@ -17,8 +17,19 @@ export function useUser() {
     };
 
     const users = async () => {
-        return await fetch(`${process.env.YUI_SERVER}/users`);
+        return await fetch(`${url}/users`);
     };
 
-    return { create, users };
+    const findById = async (
+        id: number | string,
+    ): Promise<Omit<TUser, 'password'> | undefined> => {
+        try {
+            const res = await fetch(`${url}/user?id=${id}`);
+            return await res.json();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    return { create, users, findById };
 }
