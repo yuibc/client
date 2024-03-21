@@ -34,21 +34,25 @@ import { useUser } from '@/services';
 import { TUser } from '@/types';
 
 export const Navbar = () => {
-    const isAuth = localStorage.getItem('Access-Token') !== null;
+    const [isAuth, setIsAuth] = useState(false);
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [userInfo, setUserInfo] = useState<Partial<Omit<TUser, 'password'>>>(
-        {},
-    );
-    const { findById } = useUser('');
+    const [userInfo, setUserInfo] = useState<Omit<TUser, 'password'>>({
+        email: '',
+        displayName: '',
+        walletAddress: '',
+    });
+    const { findById } = useUser();
 
     const fetchUserInfo = async () => {
-        const id = localStorage.getItem('User') || '';
+        const id = localStorage.getItem('User');
+        if (!id) return;
         const user = (await findById(id)) as Omit<TUser, 'password'>;
         setUserInfo(user);
     };
 
     useEffect(() => {
+        setIsAuth(localStorage.getItem('Access-Token') !== null);
         fetchUserInfo();
     }, []);
 
