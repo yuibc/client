@@ -24,7 +24,12 @@ export function useUser(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
         id: number | string,
     ): Promise<TInsensitiveUser | undefined> => {
         try {
-            const res = await fetch(`${url}/users/${id}`);
+            const res = await fetch(`${url}/users/${id}`, {
+                method: 'GET',
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
             return await res.json();
         } catch (e) {
             console.error(e);

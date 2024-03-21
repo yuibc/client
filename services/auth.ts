@@ -10,12 +10,11 @@ export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
             const accessToken = localStorage.getItem('Access-Token') || '';
             const res = await fetch(`${url}/auth`, {
                 method: 'POST',
-                body: JSON.stringify({ email, password }),
                 headers: {
-                    accept: 'application/json',
                     'content-type': 'application/json',
                     authorization: `Bearer ${accessToken}`,
                 },
+                body: JSON.stringify({ email, password }),
             });
             const data = await res.json();
             localStorage.setItem('Access-Token', data.accessToken);
