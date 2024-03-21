@@ -14,9 +14,8 @@ import {
     IcBaselineEmailIcon,
     ParkSolidConnectIcon,
 } from './icons';
-import { useUser } from '@/services';
+import { useUser, useAuth } from '@/services';
 import { useRef, useState } from 'react';
-import { useAuth } from '@/services/auth';
 
 export const LoginPopup = ({
     title,
