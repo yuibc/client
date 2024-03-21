@@ -1,5 +1,9 @@
+import { TInsensitiveUser } from '@/types';
+
 export function useFollow(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
-    const followers = async (userId: number) => {
+    const followers = async (
+        userId: number,
+    ): Promise<TInsensitiveUser[] | undefined> => {
         try {
             const res = await fetch(`${url}/user/${userId}/followers`, {
                 method: 'GET',
