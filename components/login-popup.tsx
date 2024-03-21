@@ -55,6 +55,7 @@ export const LoginPopup = ({
             email: email.current?.value,
             password: password.current?.value,
         });
+        location.reload();
     };
 
     return (
