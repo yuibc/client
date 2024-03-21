@@ -30,6 +30,12 @@ export const LoginPopup = ({
     const password = useRef<HTMLInputElement | null>(null);
     const displayName = useRef<HTMLInputElement | null>(null);
     const [isSignUp, setIsSignUp] = useState(false);
+    const [isConnect, setIsConnect] = useState(false);
+
+    const switchState = () => {
+        setIsSignUp(!isSignUp);
+        setIsConnect(false);
+    };
 
     const signup = async () => {
         await create({
@@ -37,13 +43,18 @@ export const LoginPopup = ({
             password: password.current?.value,
             displayName: displayName.current?.value,
         });
-        setTimeout(async () => {
-            await authenticate({
-                email: email.current?.value,
-                password: password.current?.value,
-            });
-            location.reload();
-        }, 1000);
+        await authenticate({
+            email: email.current?.value,
+            password: password.current?.value,
+        });
+        location.reload();
+    };
+
+    const connect = async () => {
+        await authenticate({
+            email: email.current?.value,
+            password: password.current?.value,
+        });
     };
 
     return (
@@ -67,7 +78,27 @@ export const LoginPopup = ({
                                 }
                                 type="email"
                             />
-                            {isSignUp && (
+                            {isConnect && (
+                                <>
+                                    <Spacer />
+                                    <Spacer />
+                                    <Input
+                                        ref={password}
+                                        aria-label="Password"
+                                        classNames={{
+                                            inputWrapper: 'bg-default-100',
+                                            input: 'text-sm xl:w-[535px] lg:w-[535px] md:[355px]',
+                                        }}
+                                        labelPlacement="outside"
+                                        placeholder="Password"
+                                        startContent={
+                                            <IcBaselineEmailIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+                                        }
+                                        type="password"
+                                    />
+                                </>
+                            )}
+                            {isSignUp && !isConnect && (
                                 <>
                                     <Spacer />
                                     <Spacer />
@@ -113,20 +144,26 @@ export const LoginPopup = ({
                                     startContent={<ParkSolidConnectIcon />}>
                                     Sign up
                                 </Button>
-                            ) : (
+                            ) : isConnect ? (
                                 <Button
                                     title="Connect with email"
-                                    onPress={() => setIsSignUp(!isSignUp)}
+                                    onPress={connect}
                                     variant="flat"
                                     startContent={<ParkSolidConnectIcon />}>
                                     Connect
                                 </Button>
+                            ) : (
+                                <Button
+                                    title="Connect with email"
+                                    onPress={() => setIsConnect(true)}
+                                    variant="flat"
+                                    startContent={<ParkSolidConnectIcon />}>
+                                    Log in
+                                </Button>
                             )}
                         </span>
                     </div>
-                    <Button
-                        variant="light"
-                        onPress={() => setIsSignUp(!isSignUp)}>
+                    <Button variant="light" onPress={switchState}>
                         {isSignUp
                             ? 'Already have an account? Click here to sign in.'
                             : 'No account? Click here to sign up.'}
