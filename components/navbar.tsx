@@ -31,24 +31,20 @@ import { CartDrawer } from './cart-drawer';
 import { Badge } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
 import { useUser } from '@/services';
-import { TUser } from '@/types';
+import { TInsensitiveUser } from '@/types';
 
 export const Navbar = () => {
     const [isAuth, setIsAuth] = useState(false);
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [userInfo, setUserInfo] = useState<Omit<TUser, 'password'>>({
-        email: '',
-        displayName: '',
-        walletAddress: '',
-    });
+    const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
     const { findById } = useUser();
 
     const fetchUserInfo = async () => {
         const id = localStorage.getItem('User');
         if (!id) return;
-        const user = (await findById(id)) as Omit<TUser, 'password'>;
-        setUserInfo(user);
+        const user = await findById(id);
+        setUserInfo(user as TInsensitiveUser);
     };
 
     useEffect(() => {
