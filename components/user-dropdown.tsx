@@ -15,6 +15,11 @@ import {
 import { CreatorBlock } from './creator-block';
 
 export const UserDropdown = ({ displayName }: Partial<UserDropdownProps>) => {
+    const signOut = () => {
+        localStorage.removeItem('Access-Token');
+        localStorage.removeItem('User');
+        location.reload();
+    };
     return (
         <Dropdown>
             <DropdownTrigger>
@@ -50,6 +55,7 @@ export const UserDropdown = ({ displayName }: Partial<UserDropdownProps>) => {
                     key="sign-out"
                     color="danger"
                     className="text-danger"
+                    onPress={signOut}
                     startContent={<LetsIconsSignOutSqureFill />}>
                     Sign out
                 </DropdownItem>
