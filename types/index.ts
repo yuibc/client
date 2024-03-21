@@ -94,3 +94,5 @@ export type TUser = {
     displayName: string;
     walletAddress: string;
 };
+
+export type TInsensitiveUser = Omit<TUser, 'password'>;
