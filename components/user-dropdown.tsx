@@ -1,4 +1,4 @@
-import { UserDropdownProps } from '@/types';
+import { TInsensitiveUser, UserDropdownProps } from '@/types';
 import {
     Button,
     Dropdown,
@@ -13,13 +13,27 @@ import {
     WalletLoginIcon,
 } from './icons';
 import { CreatorBlock } from './creator-block';
+import { useFollow } from '@/services';
+import { useEffect, useState } from 'react';
 
 export const UserDropdown = ({ displayName }: Partial<UserDropdownProps>) => {
+    const { followers } = useFollow();
+    const [followerCount, setFollowerCount] = useState(0);
     const signOut = () => {
         localStorage.removeItem('Access-Token');
         localStorage.removeItem('User');
         location.reload();
     };
+
+    const fetchFollowerCount = async () => {
+        const userId = parseInt(localStorage.getItem('User') as string);
+        const fws = (await followers(userId)) as TInsensitiveUser[];
+        setFollowerCount(fws.length);
+    };
+
+    useEffect(() => {
+        fetchFollowerCount();
+    }, []);
     return (
         <Dropdown>
             <DropdownTrigger>
@@ -35,7 +49,7 @@ export const UserDropdown = ({ displayName }: Partial<UserDropdownProps>) => {
                 <DropdownItem>
                     <CreatorBlock
                         displayName={displayName}
-                        followerCount={1200}
+                        followerCount={followerCount}
                         borderless
                         noFollowButton
                     />
