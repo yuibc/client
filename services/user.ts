@@ -1,6 +1,6 @@
-import { TUser } from '@/types';
+import { TInsensitiveUser, TUser } from '@/types';
 
-export function useUser(url: string) {
+export function useUser(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
     const create = async ({ email, password, displayName }: Partial<TUser>) => {
         try {
             const res = await fetch(`${url}/user`, {
@@ -22,9 +22,9 @@ export function useUser(url: string) {
 
     const findById = async (
         id: number | string,
-    ): Promise<Omit<TUser, 'password'> | undefined> => {
+    ): Promise<TInsensitiveUser | undefined> => {
         try {
-            const res = await fetch(`${url}/user?id=${id}`);
+            const res = await fetch(`${url}/users/${id}`);
             return await res.json();
         } catch (e) {
             console.error(e);

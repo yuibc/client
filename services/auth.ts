@@ -1,6 +1,6 @@
 import { TAuth } from '@/types';
 
-export function useAuth(url: string) {
+export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
     const authenticate = async ({
         email,
         password,
