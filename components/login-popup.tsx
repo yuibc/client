@@ -24,9 +24,8 @@ export const LoginPopup = ({
     onOpen,
     onConnect,
 }: Partial<LoginPopupProps>) => {
-    const url = '';
-    const { create } = useUser(url);
-    const { authenticate } = useAuth(url);
+    const { create } = useUser();
+    const { authenticate } = useAuth();
     const email = useRef<HTMLInputElement | null>(null);
     const password = useRef<HTMLInputElement | null>(null);
     const displayName = useRef<HTMLInputElement | null>(null);
