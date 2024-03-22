@@ -13,6 +13,8 @@ export const CreatorBlock = ({
 }: Partial<CreatorBlockProps>) => {
     const formatThousand = (total: number) =>
         total > 1000 ? `${total * 0.001}k` : total;
+    const formatFollower = (total: number) =>
+        total > 1 ? `${total} Follower` : `${formatThousand} Followers`;
 
     return (
         <div
@@ -31,7 +33,7 @@ export const CreatorBlock = ({
                 <span className="flex gap-1">
                     <FlowbiteUsersSolidIcon />
                     <h5 className="text-sm">
-                        {formatThousand(followerCount as number)} Followers
+                        {formatFollower(followerCount as number)}
                     </h5>
                 </span>
                 {!noFollowButton && (
