@@ -5,6 +5,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type ArtBlockProps = {
+    artworkId: number;
     title: string;
     url: string;
     cryptoPrice: number;
@@ -96,3 +97,8 @@ export type TUser = {
 };
 
 export type TInsensitiveUser = Omit<TUser, 'password'>;
+
+export type TCart = {
+    user: number;
+    artwork: number;
+};
