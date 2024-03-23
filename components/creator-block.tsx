@@ -14,13 +14,15 @@ export const CreatorBlock = ({
     const formatThousand = (total: number) =>
         total > 1000 ? `${total * 0.001}k` : total;
     const formatFollower = (total: number) =>
-        total > 1 ? `${total} Follower` : `${formatThousand} Followers`;
+        total < 1 ? `${total} Follower` : `${formatThousand(total)} Followers`;
 
     return (
         <div
-            className={clsx(
-                'flex justify-evenly items-center gap-3 border-1 border-default-100 rounded-md p-5',
-            )}>
+            className={clsx({
+                ['flex justify-evenly items-center p-5 gap-3']: true,
+                ['border-1 border-default-100 rounded-md']: !borderless,
+                ['border-0 rounded-md']: borderless,
+            })}>
             <div>
                 <Avatar
                     name={displayName}
