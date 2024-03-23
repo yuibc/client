@@ -1,28 +1,53 @@
 import { TAuth } from '@/types';
 
 export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
+    const accessToken = () => localStorage.getItem('Access-Token') || '';
+
+    const setLocalStorage = (accessToken: string, userId: string) => {
+        localStorage.setItem('Access-Token', accessToken);
+        localStorage.setItem('User', userId);
+    };
+
     const authenticate = async ({
         email,
         password,
-        walletAddress,
-    }: Partial<TAuth>) => {
+    }: Partial<Omit<TAuth, 'walletAddress'>>) => {
         try {
-            const accessToken = localStorage.getItem('Access-Token') || '';
             const res = await fetch(`${url}/auth`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
-                    authorization: `Bearer ${accessToken}`,
+                    authorization: `Bearer ${accessToken()}`,
                 },
                 body: JSON.stringify({ email, password }),
             });
             const data = await res.json();
-            localStorage.setItem('Access-Token', data.accessToken);
-            localStorage.setItem('User', data.userId);
+            setLocalStorage(data.accessToken, data.userId);
         } catch (e) {
             console.error(e);
         }
     };
 
-    return { authenticate };
+    const authenticateWithWallet = async ({
+        walletAddress,
+        password,
+    }: Partial<Omit<TAuth, 'email'>>) => {
+        try {
+            const res = await fetch(`${url}/wallet/auth`, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    authorization: `Bearer ${accessToken()}`,
+                },
+                body: JSON.stringify({ walletAddress, password }),
+            });
+            const data = await res.json();
+            console.log(data);
+            setLocalStorage(data.accessToken, data.userId);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    return { authenticate, authenticateWithWallet };
 }
