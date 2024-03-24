@@ -12,13 +12,55 @@ import {
     Checkbox,
 } from '@nextui-org/react';
 import { PostModalProps } from '@/types';
-import Dropzone from './dropzone';
+import { Dropzone } from './dropzone';
+import { useArtwork, useMetaplex } from '@/services';
+import { ChangeEvent, useRef, useState } from 'react';
 
-export const PostModal = ({
-    onPost,
-    isOpen,
-    onClose,
-}: Partial<PostModalProps>) => {
+export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
+    const title = useRef<HTMLInputElement | null>(null);
+    const description = useRef<HTMLTextAreaElement | null>(null);
+    const categories = useRef<HTMLTextAreaElement | null>(null);
+    const cryptoPrice = useRef<HTMLInputElement | null>(null);
+
+    const [published, setPublished] = useState(false);
+    const [fileUploaded, setFileUploaded] = useState<File | null>(null);
+    const { uploadArtwork } = useMetaplex();
+    const { add } = useArtwork();
+
+    const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (!e.target) return;
+        if (!e.target.files) return;
+        setFileUploaded(e.target.files[0]);
+    };
+
+    const addArtwork = async () => {
+        const walletAddress = localStorage.getItem('walletAddress');
+        if (!title.current?.value || !description.current?.value) return;
+        if (!walletAddress) return;
+
+        const { url: metadata, data } = await uploadArtwork({
+            title: title.current.value,
+            description: description.current.value,
+            owner: walletAddress,
+            artwork: fileUploaded as File,
+        });
+
+        await add({
+            title: title.current.value,
+            description: description.current.value,
+            categories: categories.current?.value,
+            cryptoPrice:
+                parseFloat(cryptoPrice.current?.value as string) || 0.0,
+            currency: 'SOL',
+            url: data.image.toString(),
+            metadata,
+            published,
+        });
+
+        if (onClose) onClose();
+    };
+
     const animals = [
         {
             label: 'Cat',
@@ -102,6 +144,7 @@ export const PostModal = ({
                                 placeholder="..."
                                 startContent=""
                                 type="search"
+                                ref={title}
                             />
                             <Textarea
                                 label="Description"
@@ -110,6 +153,7 @@ export const PostModal = ({
                                 disableAutosize
                                 maxRows={4}
                                 size="lg"
+                                ref={description}
                             />
                             <Autocomplete
                                 label="Categories"
@@ -123,10 +167,15 @@ export const PostModal = ({
                                     </AutocompleteItem>
                                 ))}
                             </Autocomplete>
-                            <Textarea disableAutosize maxRows={4} size="lg" />
+                            <Textarea
+                                disableAutosize
+                                maxRows={4}
+                                size="lg"
+                                ref={categories}
+                            />
                         </span>
                         <span className="col-span-6">
-                            <Dropzone />
+                            <Dropzone onChange={handleUpload} />
                             <Spacer />
                             <Spacer />
                             <Spacer />
@@ -143,6 +192,7 @@ export const PostModal = ({
                                     placeholder="0.00"
                                     startContent=""
                                     type="number"
+                                    ref={cryptoPrice}
                                 />
                                 <Input
                                     aria-label="crypto-currency"
@@ -158,7 +208,11 @@ export const PostModal = ({
                                     type="text"
                                     readOnly
                                 />
-                                <Checkbox>Published?</Checkbox>
+                                <Checkbox
+                                    isSelected={published}
+                                    onValueChange={setPublished}>
+                                    Published?
+                                </Checkbox>
                             </span>
                         </span>
                     </div>
@@ -168,7 +222,7 @@ export const PostModal = ({
                         title="post"
                         color="primary"
                         variant="flat"
-                        onPress={onPost}>
+                        onPress={addArtwork}>
                         Add to your creation
                     </Button>
                 </ModalFooter>
