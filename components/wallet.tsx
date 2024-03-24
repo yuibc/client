@@ -3,6 +3,7 @@ import {
     ConnectionProvider,
     useWallet,
     Wallet as TWallet,
+    WalletProvider,
 } from '@solana/wallet-adapter-react';
 import {
     WalletAdapterNetwork,
@@ -22,10 +23,14 @@ import {
 } from '@nextui-org/react';
 import { WalletLoginIcon } from './icons';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
+import { useAuth, useUser } from '@/services';
+import { generateRandomString } from '@/helpers';
 
 export const Wallet: FC = () => {
     const [isOpen, setOpen] = useState(false);
     const { wallets } = useWallet();
+    const { authenticateWithWallet } = useAuth();
+    const { create, findByWalletAddress } = useUser();
 
     const network = WalletAdapterNetwork.Testnet;
 
@@ -50,13 +55,23 @@ export const Wallet: FC = () => {
 
     const connectWallet = async (adapter: Adapter) => {
         await adapter.connect();
-        if (adapter.connected) {
-            localStorage.setItem(
-                'walletAddress',
-                adapter.publicKey?.toString() || '',
-            );
+        if (!adapter.connected) return;
+
+        const walletAddress = adapter.publicKey?.toString() || '';
+        const user = await findByWalletAddress(walletAddress);
+        if (!user) {
+            await create({
+                email: '',
+                displayName: generateRandomString(10),
+                walletAddress,
+            });
+            await authenticateWithWallet(walletAddress);
             location.reload();
         }
+
+        await authenticateWithWallet(walletAddress);
+        localStorage.setItem('walletAddress', walletAddress);
+        location.reload();
     };
 
     return (
