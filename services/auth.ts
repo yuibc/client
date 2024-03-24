@@ -28,10 +28,7 @@ export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
         }
     };
 
-    const authenticateWithWallet = async ({
-        walletAddress,
-        password,
-    }: Partial<Omit<TAuth, 'email'>>) => {
+    const authenticateWithWallet = async (walletAddress: string) => {
         try {
             const res = await fetch(`${url}/wallet/auth`, {
                 method: 'POST',
@@ -39,10 +36,9 @@ export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
                     'content-type': 'application/json',
                     authorization: `Bearer ${accessToken()}`,
                 },
-                body: JSON.stringify({ walletAddress, password }),
+                body: JSON.stringify({ walletAddress }),
             });
             const data = await res.json();
-            console.log(data);
             setLocalStorage(data.accessToken, data.userId);
         } catch (e) {
             console.error(e);
