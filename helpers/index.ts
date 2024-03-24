@@ -10,3 +10,6 @@ export function generateRandomString(length: number) {
 
     return result;
 }
+
+export const toIPFSGateway = (ipfs: string) =>
+    `https://ipfs.io/ipfs/${ipfs.slice(7, ipfs.length)}`;
