@@ -10,6 +10,10 @@
         "fmt": "npx prettier . --write"
     },
     "dependencies": {
+        "@metaplex-foundation/mpl-token-metadata": "^3.2.1",
+        "@metaplex-foundation/umi": "^0.9.1",
+        "@metaplex-foundation/umi-bundle-defaults": "^0.9.1",
+        "@metaplex-foundation/umi-uploader-nft-storage": "^0.9.1",
         "@nextui-org/button": "2.0.26",
         "@nextui-org/card": "^2.0.24",
         "@nextui-org/code": "2.0.24",
@@ -28,6 +32,7 @@
         "@solana/wallet-adapter-react": "^0.15.35",
         "@solana/wallet-adapter-react-ui": "^0.9.35",
         "@solana/wallet-adapter-wallets": "^0.19.32",
+        "@solana/web3.js": "^1.91.1",
         "@types/node": "20.5.7",
         "@types/react": "18.2.21",
         "@types/react-dom": "18.2.7",
