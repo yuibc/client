@@ -18,13 +18,7 @@ import NextLink from 'next/link';
 import clsx from 'clsx';
 
 import { ThemeSwitch } from '@/components/theme-switch';
-import {
-    GithubIcon,
-    Logo,
-    WalletLoginIcon,
-    SearchIcon,
-    CartIcon,
-} from '@/components/icons';
+import { GithubIcon, Logo, SearchIcon, CartIcon } from '@/components/icons';
 import { LoginPopup } from './login-popup';
 import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
