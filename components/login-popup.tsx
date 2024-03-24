@@ -80,13 +80,11 @@ export const LoginPopup = ({
             });
             await authenticateWithWallet({
                 walletAddress,
-                password: password.current?.value,
             });
             location.reload();
         }
         await authenticateWithWallet({
             walletAddress,
-            password: password.current?.value,
         });
         location.reload();
     };
