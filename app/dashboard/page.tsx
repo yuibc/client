@@ -3,6 +3,7 @@ import { ArtBlock } from '@/components/art-block';
 import { Empty } from '@/components/empty';
 import { PostModal } from '@/components/post-modal';
 import { SectionContent } from '@/components/section-content';
+import { toIPFSGateway } from '@/helpers';
 import { Button, Tab, Tabs } from '@nextui-org/react';
 import { useState } from 'react';
 
@@ -32,7 +33,12 @@ export default function ArtworkManagement() {
                     className="border-b border-default-50 py-7 font-semibold">
                     <Tab key="work" title="Work (4/30)">
                         <SectionContent gridSize={5} header="Your creations">
-                            <ArtBlock isDashboardItem />
+                            <ArtBlock
+                                isDashboardItem
+                                url={toIPFSGateway(
+                                    'ipfs://bafybeiaxzk66xbeiuk3rfxz2bygkqtts63wsyhthujbfrpvhsarhfqa7gu/output_3761611179_0.jpg',
+                                )}
+                            />
                             <ArtBlock isDashboardItem />
                             <ArtBlock isDashboardItem />
                             <ArtBlock isDashboardItem />
