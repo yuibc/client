@@ -17,6 +17,13 @@ export type ArtBlockProps = {
 
 export type TArtBlock = ArtBlockProps;
 
+export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'artworkId'> & {
+    description: string;
+    categories: string;
+    metadata: string;
+    published: boolean;
+};
+
 export type SectionProps = {
     header: string;
     icon: ReactNode;
