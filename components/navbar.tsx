@@ -32,6 +32,7 @@ import { Badge } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
 import { useUser } from '@/services';
 import { TInsensitiveUser } from '@/types';
+import { Wallet } from './wallet';
 
 export const Navbar = () => {
     const [isAuth, setIsAuth] = useState(false);
@@ -109,16 +110,7 @@ export const Navbar = () => {
                     {isAuth ? (
                         <UserDropdown displayName={userInfo.displayName} />
                     ) : (
-                        <Button
-                            isExternal
-                            as={Link}
-                            size="md"
-                            className="text-sm font-semibold text-default-600 bg-default-100"
-                            startContent={<WalletLoginIcon />}
-                            onPress={() => setLoginPopup(true)}
-                            variant="flat">
-                            Login
-                        </Button>
+                        <Wallet />
                     )}
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
