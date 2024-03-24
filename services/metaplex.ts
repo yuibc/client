@@ -1,5 +1,4 @@
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { nftStorageUploader } from '@metaplex-foundation/umi-uploader-nft-storage';
 import {
     TokenStandard,
     createV1,
@@ -8,11 +7,11 @@ import {
     mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
-    GenericFile,
     generateSigner,
     percentAmount,
     publicKey,
 } from '@metaplex-foundation/umi';
+import { NFTStorage } from 'nft.storage';
 
 type TNFT = {
     name: string;
@@ -23,7 +22,7 @@ type TArtwork = {
     title: string;
     description: string;
     owner: string;
-    artworkUri: string;
+    artwork: File | Blob;
 };
 
 export function useMetaplex() {
@@ -31,29 +30,22 @@ export function useMetaplex() {
         mplTokenMetadata(),
     );
 
-    umi.use(
-        nftStorageUploader({
-            token: process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY as string,
-        }),
-    );
-
     const mint = generateSigner(umi);
 
-    const uploadArtwork = async (fileBuffer: GenericFile) => {
-        const [uri] = await umi.uploader.upload([fileBuffer]);
-        return uri;
-    };
+    const storage = new NFTStorage({
+        token: process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY as string,
+    });
 
-    const uploadArtworkMetadata = async ({
+    const uploadArtwork = async ({
         title,
         description,
-        artworkUri,
+        artwork,
         owner,
     }: TArtwork) => {
-        return await umi.uploader.uploadJson({
-            title,
+        return await storage.store({
+            name: title,
             description,
-            artworkUri,
+            image: artwork,
             owner,
         });
     };
@@ -81,7 +73,6 @@ export function useMetaplex() {
     return {
         fetchAsset,
         uploadArtwork,
-        uploadArtworkMetadata,
         createAccount,
         mintToken,
     };
