@@ -1,13 +1,14 @@
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import {
     TokenStandard,
+    createNft,
     createV1,
     fetchDigitalAsset,
     mintV1,
     mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
-    generateSigner,
+    KeypairSigner,
     percentAmount,
     publicKey,
 } from '@metaplex-foundation/umi';
@@ -26,11 +27,9 @@ type TArtwork = {
 };
 
 export function useMetaplex() {
-    const umi = createUmi(process.env.NEXT_PUBLIC_YUI_SERVER as string).use(
+    const umi = createUmi('https://api.testnet.solana.com/').use(
         mplTokenMetadata(),
     );
-
-    const mint = generateSigner(umi);
 
     const storage = new NFTStorage({
         token: process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY as string,
@@ -50,19 +49,33 @@ export function useMetaplex() {
         });
     };
 
-    const fetchAsset = async () => await fetchDigitalAsset(umi, mint.publicKey);
+    const fetchAsset = async (mint: KeypairSigner) =>
+        await fetchDigitalAsset(umi, mint.publicKey);
 
-    const createAccount = async ({ name, uri }: TNFT) =>
+    const createAccount = async (mint: KeypairSigner, { name, uri }: TNFT) =>
         await createV1(umi, {
             mint,
             authority: mint,
             name,
             uri,
-            sellerFeeBasisPoints: percentAmount(2.0),
+            sellerFeeBasisPoints: percentAmount(0.0),
             tokenStandard: TokenStandard.NonFungible,
         }).sendAndConfirm(umi);
 
-    const mintToken = async (walletAddress: string) =>
+    const nft = async (
+        mint: KeypairSigner,
+        walletAddress: string,
+        { name, uri }: TNFT,
+    ) =>
+        await createNft(umi, {
+            mint,
+            name,
+            uri,
+            sellerFeeBasisPoints: percentAmount(5.5),
+            tokenOwner: publicKey(walletAddress),
+        }).sendAndConfirm(umi);
+
+    const mintToken = async (mint: KeypairSigner, walletAddress: string) =>
         await mintV1(umi, {
             mint: mint.publicKey,
             amount: 1,
@@ -75,5 +88,7 @@ export function useMetaplex() {
         uploadArtwork,
         createAccount,
         mintToken,
+        umi,
+        nft,
     };
 }
