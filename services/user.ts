@@ -1,6 +1,7 @@
+import { BASE_URL } from '@/config/env';
 import { TInsensitiveUser, TUser } from '@/types';
 
-export function useUser(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
+export function useUser(url = BASE_URL) {
     const create = async ({
         email,
         password,

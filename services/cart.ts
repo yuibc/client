@@ -1,6 +1,7 @@
+import { BASE_URL } from '@/config/env';
 import { TCart } from '@/types';
 
-export function useCart(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
+export function useCart(url = BASE_URL) {
     const add = async ({ user, artwork }: Partial<TCart>) => {
         try {
             const res = await fetch(`${url}/cart?userId=${user}`, {

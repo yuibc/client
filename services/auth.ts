@@ -1,6 +1,7 @@
+import { BASE_URL } from '@/config/env';
 import { TAuth } from '@/types';
 
-export function useAuth(url = process.env.NEXT_PUBLIC_YUI_SERVER) {
+export function useAuth(url = BASE_URL) {
     const accessToken = () => localStorage.getItem('Access-Token') || '';
 
     const setLocalStorage = (accessToken: string, userId: string) => {
