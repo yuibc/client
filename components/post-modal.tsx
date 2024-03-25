@@ -15,6 +15,12 @@ import { PostModalProps } from '@/types';
 import { Dropzone } from './dropzone';
 import { useArtwork, useMetaplex } from '@/services';
 import { ChangeEvent, useRef, useState } from 'react';
+import {
+    generateSigner,
+    publicKey,
+    signerIdentity,
+} from '@metaplex-foundation/umi';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const title = useRef<HTMLInputElement | null>(null);
@@ -23,9 +29,11 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const cryptoPrice = useRef<HTMLInputElement | null>(null);
 
     const [published, setPublished] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [fileUploaded, setFileUploaded] = useState<File | null>(null);
-    const { uploadArtwork } = useMetaplex();
+    const { uploadArtwork, nft, mintToken, umi } = useMetaplex();
     const { add } = useArtwork();
+    const { connected, wallet } = useWallet();
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -35,30 +43,54 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     };
 
     const addArtwork = async () => {
-        const walletAddress = localStorage.getItem('walletAddress');
-        if (!title.current?.value || !description.current?.value) return;
-        if (!walletAddress) return;
+        try {
+            const walletAddress = localStorage.getItem('walletAddress');
+            if (!title.current?.value || !description.current?.value) return;
+            if (!walletAddress) return;
+            setIsLoading(true);
 
-        const { url: metadata, data } = await uploadArtwork({
-            title: title.current.value,
-            description: description.current.value,
-            owner: walletAddress,
-            artwork: fileUploaded as File,
-        });
+            const mint = generateSigner(umi);
+            umi.use(signerIdentity(mint));
 
-        await add({
-            title: title.current.value,
-            description: description.current.value,
-            categories: categories.current?.value,
-            cryptoPrice:
-                parseFloat(cryptoPrice.current?.value as string) || 0.0,
-            currency: 'SOL',
-            url: data.image.toString(),
-            metadata,
-            published,
-        });
+            console.log(walletAddress);
+            console.log(publicKey(walletAddress));
+            const { url: metadata, data } = await uploadArtwork({
+                title: title.current.value,
+                description: description.current.value,
+                owner: walletAddress,
+                artwork: fileUploaded as File,
+            });
 
-        if (onClose) onClose();
+            const nftResult = await nft(mint, walletAddress, {
+                name: title.current.value,
+                uri: data.image.toString(),
+            });
+            // const mintResult = await mintToken(mint, walletAddress);
+            console.log(nftResult.result);
+            // console.log(mintResult.result);
+
+            await add({
+                title: title.current.value,
+                description: description.current.value,
+                categories: categories.current?.value,
+                cryptoPrice:
+                    parseFloat(cryptoPrice.current?.value as string) || 0.0,
+                currency: 'SOL',
+                url: data.image.toString(),
+                metadata,
+                published,
+            });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+            if (onClose) onClose();
+        }
+    };
+
+    const check = () => {
+        alert(connected ? 'Connected' : 'Not connected');
+        console.log(wallet);
     };
 
     const animals = [
@@ -222,8 +254,16 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                         title="post"
                         color="primary"
                         variant="flat"
+                        isLoading={isLoading}
                         onPress={addArtwork}>
                         Add to your creation
+                    </Button>
+                    <Button
+                        title="check"
+                        color="primary"
+                        variant="flat"
+                        onPress={check}>
+                        Check
                     </Button>
                 </ModalFooter>
             </ModalContent>
