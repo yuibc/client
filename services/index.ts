@@ -5,3 +5,4 @@ export * from './cart';
 export * from './phantom';
 export * from './metaplex';
 export * from './artwork';
+export * from './jotai';
