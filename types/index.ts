@@ -77,6 +77,7 @@ export type CartItemV2Props = CartItemProps & {
 };
 
 export type UserDropdownProps = {
+    onClick: () => void;
     displayName: string;
 };
 
