@@ -22,18 +22,21 @@ import { GithubIcon, Logo, SearchIcon, CartIcon } from '@/components/icons';
 import { LoginPopup } from './login-popup';
 import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
-import { Badge } from '@nextui-org/react';
+import { Badge, Chip } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
-import { useUser } from '@/services';
+import { isAuthAtom, useUser } from '@/services';
 import { TInsensitiveUser } from '@/types';
 import { Wallet } from './wallet';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useAtom, useAtomValue } from 'jotai';
 
 export const Navbar = () => {
-    const [isAuth, setIsAuth] = useState(false);
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
     const { findById } = useUser();
+    const { connected } = useWallet();
+    const isAuth = useAtomValue(isAuthAtom);
 
     const fetchUserInfo = async () => {
         const id = localStorage.getItem('User');
@@ -42,10 +45,14 @@ export const Navbar = () => {
         setUserInfo(user as TInsensitiveUser);
     };
 
+    const check = () => {
+        console.log(`Context: ${connected}`);
+    };
+
     useEffect(() => {
-        setIsAuth(localStorage.getItem('Access-Token') !== null);
+        // setIsAuth(localStorage.getItem('Access-Token') !== null);
         fetchUserInfo();
-    }, []);
+    }, [isAuth]);
 
     const searchInput = (
         <Input
@@ -101,12 +108,23 @@ export const Navbar = () => {
 
             <NavbarContent className="hidden sm:flex basis-1 sm:basis-full">
                 <NavbarItem className="hidden md:flex">
+                    <Chip
+                        variant="flat"
+                        color={connected ? 'success' : 'default'}>
+                        {connected ? 'Connected' : 'Not connected'}
+                    </Chip>
+                </NavbarItem>
+                <NavbarItem className="hidden md:flex">
                     {isAuth ? (
-                        <UserDropdown displayName={userInfo.displayName} />
+                        <UserDropdown
+                            displayName={userInfo.displayName}
+                            onClick={check}
+                        />
                     ) : (
                         <Wallet />
                     )}
                 </NavbarItem>
+
                 <NavbarItem className="hidden md:flex">
                     <Badge content="1" color="danger">
                         <Button
