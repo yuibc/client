@@ -3,7 +3,6 @@ import {
     ConnectionProvider,
     useWallet,
     Wallet as TWallet,
-    WalletProvider,
 } from '@solana/wallet-adapter-react';
 import {
     WalletAdapterNetwork,
@@ -23,14 +22,16 @@ import {
 } from '@nextui-org/react';
 import { WalletLoginIcon } from './icons';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
-import { useAuth, useUser } from '@/services';
+import { isAuthAtom, useAuth, useUser } from '@/services';
 import { generateRandomString } from '@/helpers';
+import { useSetAtom } from 'jotai';
 
 export const Wallet: FC = () => {
     const [isOpen, setOpen] = useState(false);
-    const { wallets } = useWallet();
+    const { wallets, connected, connect, wallet, select } = useWallet();
     const { authenticateWithWallet } = useAuth();
     const { create, findByWalletAddress } = useUser();
+    const setIsAuth = useSetAtom(isAuthAtom);
 
     const network = WalletAdapterNetwork.Testnet;
 
@@ -54,8 +55,9 @@ export const Wallet: FC = () => {
     }, [wallets]);
 
     const connectWallet = async (adapter: Adapter) => {
-        await adapter.connect();
-        if (!adapter.connected) return;
+        select(adapter.name);
+        wallet!.adapter = adapter;
+        await connect();
 
         const walletAddress = adapter.publicKey?.toString() || '';
         const user = await findByWalletAddress(walletAddress);
@@ -66,72 +68,79 @@ export const Wallet: FC = () => {
                 walletAddress,
             });
             await authenticateWithWallet(walletAddress);
-            location.reload();
+            setOpen(false);
+            setIsAuth(true);
+            return;
         }
-
         await authenticateWithWallet(walletAddress);
         localStorage.setItem('walletAddress', walletAddress);
-        location.reload();
+        setOpen(false);
+        setIsAuth(true);
+    };
+
+    const checkConnection = () => {
+        alert(connected ? 'Connected' : 'Not connected');
     };
 
     return (
-        <>
-            <ConnectionProvider endpoint={endpoint}>
-                <Button
-                    isExternal
-                    as={Link}
-                    startContent={<WalletLoginIcon />}
-                    onPress={() => setOpen(!isOpen)}
-                    variant="flat">
-                    Connect
-                </Button>
-                <Modal
-                    backdrop="blur"
-                    isOpen={isOpen}
-                    onClose={() => setOpen(false)}>
-                    <ModalContent>
-                        <ModalBody className="text-center mt-5 font-semibold">
-                            <h2 className="text-2xl">
-                                Connect a wallet on Solana to continue
-                            </h2>
-                        </ModalBody>
-                        <ModalFooter className="flex justify-center flex-col">
-                            <Listbox
-                                variant="faded"
-                                disallowEmptySelection
-                                aria-label="Wallet Selection"
-                                selectionMode="single">
-                                {listedWallets.map((wallet) => (
-                                    <ListboxItem
-                                        key={wallet.adapter.name}
-                                        textValue={wallet.adapter.name}
-                                        onClick={() =>
-                                            connectWallet(wallet.adapter)
-                                        }
-                                        startContent={
-                                            <WalletIcon
-                                                wallet={wallet}
-                                                width={36}
-                                            />
-                                        }>
-                                        <span className="flex justify-between items-center p-3">
-                                            <span className="font-semibold">
-                                                {wallet.adapter.name}
-                                            </span>
-                                            <span className="font-mono">
-                                                {wallet.readyState ===
-                                                WalletReadyState.Installed
-                                                    ? 'Detected'
-                                                    : ''}
-                                            </span>
+        <ConnectionProvider endpoint={endpoint}>
+            <Button
+                isExternal
+                as={Link}
+                startContent={<WalletLoginIcon />}
+                onPress={() => setOpen(!isOpen)}
+                variant="flat">
+                Connect
+            </Button>
+            <Modal
+                backdrop="blur"
+                isOpen={isOpen}
+                onClose={() => setOpen(false)}>
+                <ModalContent>
+                    <ModalBody className="text-center mt-5 font-semibold">
+                        <h2 className="text-2xl">
+                            Connect a wallet on Solana to continue
+                        </h2>
+                    </ModalBody>
+                    <ModalFooter className="flex justify-center flex-col">
+                        <Listbox
+                            variant="faded"
+                            disallowEmptySelection
+                            aria-label="Wallet Selection"
+                            selectionMode="single">
+                            {listedWallets.map((wallet) => (
+                                <ListboxItem
+                                    key={wallet.adapter.name}
+                                    textValue={wallet.adapter.name}
+                                    onClick={() =>
+                                        connectWallet(wallet.adapter)
+                                    }
+                                    startContent={
+                                        <WalletIcon
+                                            wallet={wallet}
+                                            width={36}
+                                        />
+                                    }>
+                                    <span className="flex justify-between items-center p-3">
+                                        <span className="font-semibold">
+                                            {wallet.adapter.name}
                                         </span>
-                                    </ListboxItem>
-                                ))}
-                            </Listbox>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-            </ConnectionProvider>
-        </>
+                                        <span className="font-mono">
+                                            {wallet.readyState ===
+                                            WalletReadyState.Installed
+                                                ? 'Detected'
+                                                : ''}
+                                        </span>
+                                    </span>
+                                </ListboxItem>
+                            ))}
+                        </Listbox>
+                        <Button variant="flat" onPress={checkConnection}>
+                            Check Connection
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </ConnectionProvider>
     );
 };
