@@ -117,3 +117,7 @@ export type TCart = {
     user: number;
     artwork: number;
 };
+
+export type TCategory = {
+    display: string;
+};
