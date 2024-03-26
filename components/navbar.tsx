@@ -24,7 +24,7 @@ import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
 import { Badge, Chip } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
-import { isAuthAtom, useUser } from '@/services';
+import { isAuthAtom, shoppingCartAtom, useUser } from '@/services';
 import { TInsensitiveUser } from '@/types';
 import { Wallet } from './wallet';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -37,6 +37,7 @@ export const Navbar = () => {
     const { findById } = useUser();
     const wallet = useWallet();
     const isAuth = useAtomValue(isAuthAtom);
+    const shoppingCart = useAtomValue(shoppingCartAtom);
 
     const fetchUserInfo = async () => {
         const id = localStorage.getItem('User');
@@ -126,7 +127,10 @@ export const Navbar = () => {
                 </NavbarItem>
 
                 <NavbarItem className="hidden md:flex">
-                    <Badge content="1" color="danger">
+                    <Badge
+                        content={shoppingCart.length}
+                        isInvisible={shoppingCart.length === 0}
+                        color="danger">
                         <Button
                             isExternal
                             isIconOnly
