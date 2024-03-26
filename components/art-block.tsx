@@ -15,7 +15,12 @@ import {
 import { ArtBlockProps } from '@/types';
 import { CartIcon, PhGearSixFillIcon } from './icons';
 import { useCart } from '@/services/cart';
-import { useCryptoConversion } from '@/services';
+import {
+    addedItemsAtom,
+    shoppingCartAtom,
+    useCryptoConversion,
+} from '@/services';
+import { useAtom } from 'jotai';
 
 export const ArtBlock = ({
     url,
@@ -29,9 +34,35 @@ export const ArtBlock = ({
     const { add } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
     const [convertedPrice, setConvertedPrice] = useState('');
+    const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
+    const [addedItems, setAddedItems] = useAtom(addedItemsAtom);
+
     const addToCart = async () => {
         const userId = localStorage.getItem('User');
-        if (!userId) return;
+        const items = JSON.parse(localStorage.getItem('Saved-Items') as string);
+        if (!userId) {
+            if (Object.keys(items).length === 0) {
+                const savedItems = Object.assign({ [`${artworkId}`]: 1 }, {});
+                localStorage.setItem('Saved-Items', JSON.stringify(savedItems));
+            } else {
+                localStorage.setItem(
+                    'Saved-Items',
+                    JSON.stringify({ ...items, [`${artworkId}`]: 1 }),
+                );
+            }
+            setAddedItems({ ...addedItems, [`${artworkId}`]: 1 });
+            setShoppingCart([
+                ...shoppingCart,
+                {
+                    url,
+                    title,
+                    currency,
+                    cryptoPrice,
+                    cryptoCurrency,
+                },
+            ]);
+            return;
+        }
         await add({ user: parseInt(userId as string), artwork: artworkId });
     };
 
@@ -95,6 +126,7 @@ export const ArtBlock = ({
                             startContent={<CartIcon />}
                             variant="flat"
                             onPress={addToCart}
+                            isDisabled={addedItems[`${artworkId}`] === 1}
                         />
                     )}
                 </div>
