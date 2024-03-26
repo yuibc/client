@@ -13,6 +13,10 @@ export interface ProvidersProps {
 }
 export function Providers({ children, themeProps }: ProvidersProps) {
     const router = useRouter();
+    if (typeof window !== 'undefined') {
+        const savedItems = localStorage.getItem('Saved-Items');
+        if (!savedItems) localStorage.setItem('Saved-Items', '{}');
+    }
     return (
         <NextUIProvider navigate={router.push}>
             <NextThemesProvider {...themeProps}>
