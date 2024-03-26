@@ -7,7 +7,6 @@ import {
 import {
     WalletAdapterNetwork,
     WalletReadyState,
-    Adapter,
 } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import {
@@ -28,7 +27,7 @@ import { useSetAtom } from 'jotai';
 
 export const Wallet: FC = () => {
     const [isOpen, setOpen] = useState(false);
-    const { wallets, connected, connect, wallet, select } = useWallet();
+    const wallet = useWallet();
     const { authenticateWithWallet } = useAuth();
     const { create, findByWalletAddress } = useUser();
     const setIsAuth = useSetAtom(isAuthAtom);
@@ -41,25 +40,25 @@ export const Wallet: FC = () => {
         const installed: TWallet[] = [];
         const notInstalled: TWallet[] = [];
 
-        for (const wallet of wallets) {
-            if (wallet.readyState === WalletReadyState.Installed) {
-                installed.push(wallet);
+        for (const w of wallet.wallets) {
+            if (w.readyState === WalletReadyState.Installed) {
+                installed.push(w);
             } else {
-                notInstalled.push(wallet);
+                notInstalled.push(w);
             }
         }
 
         return installed.length
             ? [installed, notInstalled]
             : [notInstalled, []];
-    }, [wallets]);
+    }, [wallet.wallets]);
 
-    const connectWallet = async (adapter: Adapter) => {
-        select(adapter.name);
-        wallet!.adapter = adapter;
-        await connect();
+    const connectWallet = async (selectedWallet: TWallet) => {
+        wallet.wallet = selectedWallet;
+        wallet.select(selectedWallet.adapter.name);
+        await wallet.wallet.adapter.connect();
 
-        const walletAddress = adapter.publicKey?.toString() || '';
+        const walletAddress = wallet.wallet.adapter.publicKey?.toString() || '';
         const user = await findByWalletAddress(walletAddress);
         if (!user) {
             await create({
@@ -76,10 +75,6 @@ export const Wallet: FC = () => {
         localStorage.setItem('walletAddress', walletAddress);
         setOpen(false);
         setIsAuth(true);
-    };
-
-    const checkConnection = () => {
-        alert(connected ? 'Connected' : 'Not connected');
     };
 
     return (
@@ -112,9 +107,7 @@ export const Wallet: FC = () => {
                                 <ListboxItem
                                     key={wallet.adapter.name}
                                     textValue={wallet.adapter.name}
-                                    onClick={() =>
-                                        connectWallet(wallet.adapter)
-                                    }
+                                    onClick={() => connectWallet(wallet)}
                                     startContent={
                                         <WalletIcon
                                             wallet={wallet}
@@ -135,9 +128,6 @@ export const Wallet: FC = () => {
                                 </ListboxItem>
                             ))}
                         </Listbox>
-                        <Button variant="flat" onPress={checkConnection}>
-                            Check Connection
-                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
