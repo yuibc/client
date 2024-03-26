@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     CardHeader,
@@ -15,23 +15,32 @@ import {
 import { ArtBlockProps } from '@/types';
 import { CartIcon, PhGearSixFillIcon } from './icons';
 import { useCart } from '@/services/cart';
+import { useCryptoConversion } from '@/services';
 
 export const ArtBlock = ({
     url,
     title,
     currency,
     cryptoPrice,
-    convertedPrice,
     cryptoCurrency,
     isDashboardItem,
     artworkId,
 }: Partial<ArtBlockProps>) => {
     const { add } = useCart();
+    const { solanaToUsd, calculatePrice } = useCryptoConversion();
+    const [convertedPrice, setConvertedPrice] = useState('');
     const addToCart = async () => {
         const userId = localStorage.getItem('User');
         if (!userId) return;
         await add({ user: parseInt(userId as string), artwork: artworkId });
     };
+
+    useEffect(() => {
+        // solanaToUsd().then((data) =>
+        //     setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
+        // );
+    }, []);
+
     return (
         <Card className="py-4">
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
