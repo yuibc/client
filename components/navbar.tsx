@@ -28,14 +28,14 @@ import { isAuthAtom, useUser } from '@/services';
 import { TInsensitiveUser } from '@/types';
 import { Wallet } from './wallet';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
     const { findById } = useUser();
-    const { connected } = useWallet();
+    const wallet = useWallet();
     const isAuth = useAtomValue(isAuthAtom);
 
     const fetchUserInfo = async () => {
@@ -46,7 +46,7 @@ export const Navbar = () => {
     };
 
     const check = () => {
-        console.log(`Context: ${connected}`);
+        console.log(`Context: ${wallet.connected}`);
     };
 
     useEffect(() => {
@@ -110,8 +110,8 @@ export const Navbar = () => {
                 <NavbarItem className="hidden md:flex">
                     <Chip
                         variant="flat"
-                        color={connected ? 'success' : 'default'}>
-                        {connected ? 'Connected' : 'Not connected'}
+                        color={wallet.connected ? 'success' : 'default'}>
+                        {wallet.connected ? 'Connected' : 'Not connected'}
                     </Chip>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
