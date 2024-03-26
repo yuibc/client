@@ -13,14 +13,11 @@ import {
 } from '@nextui-org/react';
 import { PostModalProps } from '@/types';
 import { Dropzone } from './dropzone';
-import { useArtwork, useMetaplex } from '@/services';
+import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
 import { ChangeEvent, useRef, useState } from 'react';
-import {
-    generateSigner,
-    publicKey,
-    signerIdentity,
-} from '@metaplex-foundation/umi';
+import { signerIdentity } from '@metaplex-foundation/umi';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const title = useRef<HTMLInputElement | null>(null);
@@ -31,9 +28,10 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const [published, setPublished] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileUploaded, setFileUploaded] = useState<File | null>(null);
-    const { uploadArtwork, nft, mintToken, umi } = useMetaplex();
+    const { umi, mint, createAccount, mintToken } = useMetaplexUmi();
+    const wallet = useWallet();
+    const { uploadArtwork } = useNFTStorage();
     const { add } = useArtwork();
-    const { connected, wallet } = useWallet();
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -49,11 +47,9 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
             if (!walletAddress) return;
             setIsLoading(true);
 
-            const mint = generateSigner(umi);
-            umi.use(signerIdentity(mint));
+            const signer = mint(umi);
+            umi.use(signerIdentity(signer)).use(walletAdapterIdentity(wallet));
 
-            console.log(walletAddress);
-            console.log(publicKey(walletAddress));
             const { url: metadata, data } = await uploadArtwork({
                 title: title.current.value,
                 description: description.current.value,
@@ -61,13 +57,21 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 artwork: fileUploaded as File,
             });
 
-            const nftResult = await nft(mint, walletAddress, {
+            const accountResult = await createAccount(umi, signer, {
                 name: title.current.value,
                 uri: data.image.toString(),
             });
-            // const mintResult = await mintToken(mint, walletAddress);
-            console.log(nftResult.result);
-            // console.log(mintResult.result);
+
+            const mintResult = await mintToken(
+                umi,
+                signer.publicKey,
+                signer,
+                walletAddress,
+            );
+
+            console.log(accountResult.result);
+            console.log(mintResult.result);
+            console.log(signer.publicKey);
 
             await add({
                 title: title.current.value,
@@ -80,18 +84,15 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 metadata,
                 published,
             });
+            if (onClose) onClose();
         } catch (e) {
             console.error(e);
         } finally {
             setIsLoading(false);
-            if (onClose) onClose();
         }
     };
 
-    const check = () => {
-        alert(connected ? 'Connected' : 'Not connected');
-        console.log(wallet);
-    };
+    const saveAsDraft = () => {};
 
     const animals = [
         {
@@ -175,6 +176,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                                 labelPlacement="outside"
                                 placeholder="..."
                                 startContent=""
+                                defaultValue=""
                                 type="search"
                                 ref={title}
                             />
@@ -183,6 +185,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                                 labelPlacement="outside"
                                 placeholder="..."
                                 disableAutosize
+                                defaultValue=""
                                 maxRows={4}
                                 size="lg"
                                 ref={description}
@@ -201,6 +204,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                             </Autocomplete>
                             <Textarea
                                 disableAutosize
+                                defaultValue=""
                                 maxRows={4}
                                 size="lg"
                                 ref={categories}
@@ -214,6 +218,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                             <span className="grid grid-cols-6 gap-3">
                                 <Input
                                     aria-label="crypto-price"
+                                    defaultValue="0.0"
                                     classNames={{
                                         inputWrapper: 'bg-default-100',
                                         input: 'text-sm',
@@ -260,10 +265,10 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                     </Button>
                     <Button
                         title="check"
-                        color="primary"
+                        color="secondary"
                         variant="flat"
-                        onPress={check}>
-                        Check
+                        onPress={saveAsDraft}>
+                        Save as Draft
                     </Button>
                 </ModalFooter>
             </ModalContent>
