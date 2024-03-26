@@ -19,7 +19,6 @@ export default function Home() {
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
-                        convertedPrice={item.convertedPrice}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
                     />
@@ -36,7 +35,6 @@ export default function Home() {
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
-                        convertedPrice={item.convertedPrice}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
                     />
