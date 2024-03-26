@@ -1,18 +1,43 @@
-import { CartDrawerProps } from '@/types';
+import { CartDrawerProps, TArtwork } from '@/types';
 import { Button } from '@nextui-org/button';
 import { SolarTrashBinTrashBoldIcon, WalletLoginIcon } from './icons';
 import { CheckboxGroup, Divider, RadioGroup } from '@nextui-org/react';
 import { CartItemV2 } from './cart-item-v2';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RadioV2 } from './radio-v2';
 import { AnimatePresence, motion } from 'framer-motion';
+import { addedItemsAtom, shoppingCartAtom, useCart } from '@/services';
+import { toIPFSGateway } from '@/helpers';
+import { useAtom, useSetAtom } from 'jotai';
 
 export const CartDrawer = ({
     title,
     isOpen,
     onClose,
 }: Partial<CartDrawerProps>) => {
+    const [items, setItems] = useState<TArtwork[]>([]);
     const [groupSelected, setGroupSelected] = useState<string[]>([]);
+    const { cartByUser } = useCart();
+    const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
+    const setAddedItems = useSetAtom(addedItemsAtom);
+
+    const clear = () => {
+        setShoppingCart([]);
+        setAddedItems({});
+        localStorage.setItem('Saved-Items', '{}');
+    };
+
+    useEffect(() => {
+        const userId = localStorage.getItem('User');
+        const savedItems = localStorage.getItem('Saved-Items') || '';
+        if (!userId) {
+            const json = JSON.parse(savedItems);
+        } else {
+            cartByUser(parseInt(userId))
+                .then((item) => setItems(item))
+                .catch((e) => console.error(e));
+        }
+    }, []);
 
     return (
         <>
@@ -30,7 +55,7 @@ export const CartDrawer = ({
                                     },
                                 }}
                                 exit={{
-                                    x: [100, 0],
+                                    x: [0, 100],
                                     opacity: 0,
                                     transition: {
                                         duration: 0.1,
@@ -43,6 +68,7 @@ export const CartDrawer = ({
                                         </h1>
                                         <Button
                                             variant="flat"
+                                            onPress={clear}
                                             startContent={
                                                 <SolarTrashBinTrashBoldIcon />
                                             }>
@@ -55,14 +81,20 @@ export const CartDrawer = ({
                                             value={groupSelected}
                                             classNames={{ base: 'w-full' }}
                                             onChange={setGroupSelected}>
-                                            <CartItemV2
-                                                title="Horses for Courses"
-                                                author="@adudarkwa"
-                                                currency="$"
-                                                cryptoCurrency="SOL"
-                                                cryptoPrice={1}
-                                                convertedPrice={97}
-                                            />
+                                            {shoppingCart.map((item, index) => (
+                                                <CartItemV2
+                                                    key={index}
+                                                    title={item.title}
+                                                    currency="$"
+                                                    cryptoCurrency="SOL"
+                                                    cryptoPrice={
+                                                        item.cryptoPrice
+                                                    }
+                                                    url={toIPFSGateway(
+                                                        item.url as string,
+                                                    )}
+                                                />
+                                            ))}
                                         </CheckboxGroup>
                                     </div>
                                     <Divider />
