@@ -9,7 +9,6 @@ export type ArtBlockProps = {
     title: string;
     url: string;
     cryptoPrice: number;
-    convertedPrice: number;
     cryptoCurrency: string;
     currency: string;
     isDashboardItem: boolean;
@@ -48,7 +47,10 @@ export type CreatorBlockProps = {
     borderless: boolean;
 };
 
-export type TCreator = CreatorBlockProps;
+export type TCreator = Omit<
+    Omit<CreatorBlockProps, 'noFollowButton'>,
+    'borderless'
+>;
 
 export type CartDrawerProps = {
     title: string;
