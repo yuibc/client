@@ -10,28 +10,34 @@ import {
     Textarea,
     Spacer,
     Checkbox,
+    Chip,
+    Card,
+    CardBody,
 } from '@nextui-org/react';
-import { PostModalProps } from '@/types';
+import { PostModalProps, TCategory } from '@/types';
 import { Dropzone } from './dropzone';
 import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { signerIdentity } from '@metaplex-foundation/umi';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import { useCategory } from '@/services';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const title = useRef<HTMLInputElement | null>(null);
     const description = useRef<HTMLTextAreaElement | null>(null);
-    const categories = useRef<HTMLTextAreaElement | null>(null);
     const cryptoPrice = useRef<HTMLInputElement | null>(null);
 
     const [published, setPublished] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileUploaded, setFileUploaded] = useState<File | null>(null);
+    const [cates, setCategories] = useState<TCategory[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const { umi, mint, createAccount, mintToken } = useMetaplexUmi();
     const wallet = useWallet();
     const { uploadArtwork } = useNFTStorage();
     const { add } = useArtwork();
+    const { categories: retrieveCategories } = useCategory();
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -76,7 +82,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
             await add({
                 title: title.current.value,
                 description: description.current.value,
-                categories: categories.current?.value,
+                categories: selectedCategories.join(','),
                 cryptoPrice:
                     parseFloat(cryptoPrice.current?.value as string) || 0.0,
                 currency: 'SOL',
@@ -94,72 +100,23 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
 
     const saveAsDraft = () => {};
 
-    const animals = [
-        {
-            label: 'Cat',
-            value: 'cat',
-            description: 'The second most popular pet in the world',
-        },
-        {
-            label: 'Dog',
-            value: 'dog',
-            description: 'The most popular pet in the world',
-        },
-        {
-            label: 'Elephant',
-            value: 'elephant',
-            description: 'The largest land animal',
-        },
-        { label: 'Lion', value: 'lion', description: 'The king of the jungle' },
-        {
-            label: 'Tiger',
-            value: 'tiger',
-            description: 'The largest cat species',
-        },
-        {
-            label: 'Giraffe',
-            value: 'giraffe',
-            description: 'The tallest land animal',
-        },
-        {
-            label: 'Dolphin',
-            value: 'dolphin',
-            description:
-                'A widely distributed and diverse group of aquatic mammals',
-        },
-        {
-            label: 'Penguin',
-            value: 'penguin',
-            description: 'A group of aquatic flightless birds',
-        },
-        {
-            label: 'Zebra',
-            value: 'zebra',
-            description: 'A several species of African equids',
-        },
-        {
-            label: 'Shark',
-            value: 'shark',
-            description:
-                'A group of elasmobranch fish characterized by a cartilaginous skeleton',
-        },
-        {
-            label: 'Whale',
-            value: 'whale',
-            description:
-                'Diverse group of fully aquatic placental marine mammals',
-        },
-        {
-            label: 'Otter',
-            value: 'otter',
-            description: 'A carnivorous mammal in the subfamily Lutrinae',
-        },
-        {
-            label: 'Crocodile',
-            value: 'crocodile',
-            description: 'A large semiaquatic reptile',
-        },
-    ];
+    const addCategory = (category: string) => {
+        if (!category || category.length === 0) return;
+        setSelectedCategories([...selectedCategories, category]);
+    };
+
+    const removeCategory = (remove: string) => {
+        setSelectedCategories(
+            selectedCategories.filter((selected) => selected !== remove),
+        );
+    };
+
+    useEffect(() => {
+        retrieveCategories()
+            .then((res) => setCategories(res))
+            .catch((e) => console.error(e));
+    }, []);
+
     return (
         <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} size="4xl">
             <ModalContent>
@@ -193,22 +150,32 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                             <Autocomplete
                                 label="Categories"
                                 labelPlacement="outside"
+                                onSelectionChange={addCategory}
                                 placeholder="...">
-                                {animals.map((animal) => (
+                                {cates.map((c) => (
                                     <AutocompleteItem
-                                        key={animal.value}
-                                        value={animal.value}>
-                                        {animal.label}
+                                        key={c.display}
+                                        value={c.display}>
+                                        {c.display}
                                     </AutocompleteItem>
                                 ))}
                             </Autocomplete>
-                            <Textarea
-                                disableAutosize
-                                defaultValue=""
-                                maxRows={4}
-                                size="lg"
-                                ref={categories}
-                            />
+                            <Card shadow="none">
+                                <CardBody className="flex flex-row gap-2">
+                                    {selectedCategories.map(
+                                        (selected, index) => (
+                                            <Chip
+                                                key={index}
+                                                onClose={() =>
+                                                    removeCategory(selected)
+                                                }
+                                                variant="flat">
+                                                {selected}
+                                            </Chip>
+                                        ),
+                                    )}
+                                </CardBody>
+                            </Card>
                         </span>
                         <span className="col-span-6">
                             <Dropzone onChange={handleUpload} />
