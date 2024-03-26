@@ -8,3 +8,4 @@ export * from './artwork';
 export * from './jotai';
 export * from './nft-storage';
 export * from './conversion';
+export * from './category';
