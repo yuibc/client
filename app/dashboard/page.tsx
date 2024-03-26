@@ -4,14 +4,21 @@ import { Empty } from '@/components/empty';
 import { PostModal } from '@/components/post-modal';
 import { SectionContent } from '@/components/section-content';
 import { toIPFSGateway } from '@/helpers';
+import { isAuthAtom } from '@/services';
 import { Button, Tab, Tabs } from '@nextui-org/react';
-import { useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { useEffect, useState } from 'react';
 
 export default function ArtworkManagement() {
     const [openPostModal, setPostModal] = useState(false);
+    const isAuth = useAtomValue(isAuthAtom);
     const handlePostModal = () => {
         setPostModal(!openPostModal);
     };
+
+    useEffect(() => {
+        if (!isAuth) location.href = '/';
+    }, [isAuth]);
 
     return (
         <section>
