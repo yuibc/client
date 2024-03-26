@@ -12,11 +12,15 @@ export type ArtBlockProps = {
     cryptoCurrency: string;
     currency: string;
     isDashboardItem: boolean;
+    disabled: boolean;
 };
 
 export type TArtBlock = ArtBlockProps;
 
-export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'artworkId'> & {
+export type TArtwork = Omit<
+    Omit<Omit<TArtBlock, 'isDashboardItem'>, 'artworkId'>,
+    'disabled'
+> & {
     description: string;
     categories: string;
     metadata: string;
@@ -69,13 +73,14 @@ export type CartItemProps = {
     title: string;
     author: string;
     cryptoPrice: number;
-    convertedPrice: number;
     currency: string;
     cryptoCurrency: string;
 };
 
 export type CartItemV2Props = CartItemProps & {
     value: string;
+    url: string;
+    metadata: string;
 };
 
 export type UserDropdownProps = {
