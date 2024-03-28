@@ -101,7 +101,7 @@ export const CartDrawer = ({
                                         <CheckboxGroup
                                             value={groupSelected}
                                             classNames={{ base: 'w-full' }}
-                                            onChange={setGroupSelected}>
+                                            onValueChange={setGroupSelected}>
                                             {shoppingCart.map((item, index) => (
                                                 <CartItemV2
                                                     key={index}
