@@ -1,14 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
-import {
-    ConnectionProvider,
-    useWallet,
-    Wallet as TWallet,
-} from '@solana/wallet-adapter-react';
-import {
-    WalletAdapterNetwork,
-    WalletReadyState,
-} from '@solana/wallet-adapter-base';
-import { clusterApiUrl } from '@solana/web3.js';
+import { useWallet, Wallet as TWallet } from '@solana/wallet-adapter-react';
+import { WalletReadyState } from '@solana/wallet-adapter-base';
 import {
     Button,
     Link,
@@ -31,10 +23,6 @@ export const Wallet: FC = () => {
     const { authenticateWithWallet } = useAuth();
     const { create, findByWalletAddress } = useUser();
     const setIsAuth = useSetAtom(isAuthAtom);
-
-    const network = WalletAdapterNetwork.Testnet;
-
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
     const [listedWallets, _] = useMemo(() => {
         const installed: TWallet[] = [];
@@ -78,7 +66,7 @@ export const Wallet: FC = () => {
     };
 
     return (
-        <ConnectionProvider endpoint={endpoint}>
+        <>
             <Button
                 isExternal
                 as={Link}
@@ -131,6 +119,6 @@ export const Wallet: FC = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
-        </ConnectionProvider>
+        </>
     );
 };
