@@ -15,12 +15,13 @@ export default function Home() {
                 {fixedArts.map((item, index) => (
                     <ArtBlock
                         key={index}
-                        artworkId={item.artworkId}
+                        id={item.id}
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
+                        creator={item.creator}
                     />
                 ))}
             </SectionContent>
@@ -32,12 +33,13 @@ export default function Home() {
                 {fixedArts.map((item, index) => (
                     <ArtBlock
                         key={index}
-                        artworkId={item.artworkId}
+                        id={item.id}
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
+                        creator={item.creator}
                     />
                 ))}
             </SectionContent>
