@@ -46,10 +46,6 @@ export const Navbar = () => {
         setUserInfo(user as TInsensitiveUser);
     };
 
-    const check = () => {
-        console.log(`Context: ${wallet.connected}`);
-    };
-
     useEffect(() => {
         // setIsAuth(localStorage.getItem('Access-Token') !== null);
         fetchUserInfo();
@@ -117,10 +113,7 @@ export const Navbar = () => {
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
                     {isAuth ? (
-                        <UserDropdown
-                            displayName={userInfo.displayName}
-                            onClick={check}
-                        />
+                        <UserDropdown displayName={userInfo.displayName} />
                     ) : (
                         <Wallet />
                     )}
