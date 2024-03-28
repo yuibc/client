@@ -73,6 +73,7 @@ export const ArtBlock = ({
         solanaToUsd().then((data) =>
             setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
         );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

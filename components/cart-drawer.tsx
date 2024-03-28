@@ -57,6 +57,7 @@ export const CartDrawer = ({
         solanaToUsd().then((data) =>
             setConvertedPrice(calculatePrice(data, totalPrice() || 0.0) + 2.0),
         );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -100,7 +101,7 @@ export const CartDrawer = ({
                                         <CheckboxGroup
                                             value={groupSelected}
                                             classNames={{ base: 'w-full' }}
-                                            onChange={setGroupSelected}>
+                                            onValueChange={setGroupSelected}>
                                             {shoppingCart.map((item, index) => (
                                                 <CartItemV2
                                                     key={index}

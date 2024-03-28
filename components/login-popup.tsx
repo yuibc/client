@@ -42,7 +42,6 @@ export const LoginPopup = ({
     const signup = async () => {
         await create({
             email: email.current?.value,
-            password: password.current?.value,
             displayName: displayName.current?.value,
         });
         await authenticate({
@@ -74,18 +73,13 @@ export const LoginPopup = ({
         if (!user) {
             await create({
                 email: '',
-                password: password.current?.value,
                 displayName: generateRandomString(10),
                 walletAddress,
             });
-            await authenticateWithWallet({
-                walletAddress,
-            });
+            await authenticateWithWallet(walletAddress);
             location.reload();
         }
-        await authenticateWithWallet({
-            walletAddress,
-        });
+        await authenticateWithWallet(walletAddress);
         location.reload();
     };
 
