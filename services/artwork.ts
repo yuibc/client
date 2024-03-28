@@ -2,7 +2,15 @@ import { BASE_URL } from '@/config/env';
 import { TArtwork } from '@/types';
 
 export function useArtwork(baseUrl = BASE_URL) {
-    const artworks = async () => {};
+    const artworks = async (walletAddress: string) => {
+        const res = await fetch(`${baseUrl}/user/${walletAddress}/artworks`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.json();
+    };
 
     const add = async ({
         title,
