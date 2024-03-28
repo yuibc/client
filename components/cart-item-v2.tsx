@@ -6,9 +6,9 @@ export const CartItemV2 = ({
     title,
     author,
     cryptoPrice,
-    convertedPrice,
     currency,
     cryptoCurrency,
+    url,
 }: Partial<CartItemV2Props>) => {
     return (
         <Checkbox
@@ -27,7 +27,7 @@ export const CartItemV2 = ({
                     className="col-span-1"
                     width={90}
                     height={90}
-                    src=""
+                    src={url}
                     fallbackSrc="https://via.placeholder.com/300x200"
                 />
                 <span className="flex flex-col">
@@ -40,9 +40,7 @@ export const CartItemV2 = ({
                     <h3 className="font-semibold">
                         {cryptoPrice} {cryptoCurrency}
                     </h3>
-                    <h5 className="text-default-500">
-                        {currency} {convertedPrice}
-                    </h5>
+                    <h5 className="text-default-500">{currency}</h5>
                 </span>
             </div>
         </Checkbox>

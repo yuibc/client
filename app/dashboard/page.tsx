@@ -3,14 +3,30 @@ import { ArtBlock } from '@/components/art-block';
 import { Empty } from '@/components/empty';
 import { PostModal } from '@/components/post-modal';
 import { SectionContent } from '@/components/section-content';
+import { toIPFSGateway } from '@/helpers';
+import { isAuthAtom, useArtwork } from '@/services';
+import { TArtwork } from '@/types';
 import { Button, Tab, Tabs } from '@nextui-org/react';
-import { useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { useEffect, useState } from 'react';
 
 export default function ArtworkManagement() {
     const [openPostModal, setPostModal] = useState(false);
+    const [artworks, setArtworks] = useState<TArtwork[]>([]);
+    const isAuth = useAtomValue(isAuthAtom);
+    const { artworks: getArtworks } = useArtwork();
     const handlePostModal = () => {
         setPostModal(!openPostModal);
     };
+
+    useEffect(() => {
+        if (!isAuth) location.href = '/';
+        const walletAddress = localStorage.getItem('walletAddress');
+        if (!walletAddress) return;
+        getArtworks(walletAddress)
+            .then((data) => setArtworks(data))
+            .catch((e) => console.error(e));
+    }, [isAuth]);
 
     return (
         <section>
@@ -30,12 +46,25 @@ export default function ArtworkManagement() {
                     size="lg"
                     variant="underlined"
                     className="border-b border-default-50 py-7 font-semibold">
-                    <Tab key="work" title="Work (4/30)">
+                    <Tab key="work" title={`Work (${artworks.length}/30)`}>
                         <SectionContent gridSize={5} header="Your creations">
-                            <ArtBlock isDashboardItem />
-                            <ArtBlock isDashboardItem />
-                            <ArtBlock isDashboardItem />
-                            <ArtBlock isDashboardItem />
+                            {artworks.length === 0 ? (
+                                <Empty description="You haven't uploaded anything yet!" />
+                            ) : (
+                                artworks.map((artwork, index) => (
+                                    <ArtBlock
+                                        key={index}
+                                        isDashboardItem
+                                        url={toIPFSGateway(artwork.url)}
+                                        title={artwork.title}
+                                        id={artwork.id}
+                                        cryptoPrice={artwork.cryptoPrice}
+                                        cryptoCurrency={artwork.currency}
+                                        currency="$"
+                                        creator={artwork.creator}
+                                    />
+                                ))
+                            )}
                         </SectionContent>
                     </Tab>
                     <Tab key="purchased" title="Purchased">

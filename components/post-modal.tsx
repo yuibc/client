@@ -10,81 +10,119 @@ import {
     Textarea,
     Spacer,
     Checkbox,
+    Chip,
+    Card,
+    CardBody,
 } from '@nextui-org/react';
-import { PostModalProps } from '@/types';
-import Dropzone from './dropzone';
+import { PostModalProps, TCategory } from '@/types';
+import { Dropzone } from './dropzone';
+import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import { useCategory, useUmi } from '@/services';
 
-export const PostModal = ({
-    onPost,
-    isOpen,
-    onClose,
-}: Partial<PostModalProps>) => {
-    const animals = [
-        {
-            label: 'Cat',
-            value: 'cat',
-            description: 'The second most popular pet in the world',
-        },
-        {
-            label: 'Dog',
-            value: 'dog',
-            description: 'The most popular pet in the world',
-        },
-        {
-            label: 'Elephant',
-            value: 'elephant',
-            description: 'The largest land animal',
-        },
-        { label: 'Lion', value: 'lion', description: 'The king of the jungle' },
-        {
-            label: 'Tiger',
-            value: 'tiger',
-            description: 'The largest cat species',
-        },
-        {
-            label: 'Giraffe',
-            value: 'giraffe',
-            description: 'The tallest land animal',
-        },
-        {
-            label: 'Dolphin',
-            value: 'dolphin',
-            description:
-                'A widely distributed and diverse group of aquatic mammals',
-        },
-        {
-            label: 'Penguin',
-            value: 'penguin',
-            description: 'A group of aquatic flightless birds',
-        },
-        {
-            label: 'Zebra',
-            value: 'zebra',
-            description: 'A several species of African equids',
-        },
-        {
-            label: 'Shark',
-            value: 'shark',
-            description:
-                'A group of elasmobranch fish characterized by a cartilaginous skeleton',
-        },
-        {
-            label: 'Whale',
-            value: 'whale',
-            description:
-                'Diverse group of fully aquatic placental marine mammals',
-        },
-        {
-            label: 'Otter',
-            value: 'otter',
-            description: 'A carnivorous mammal in the subfamily Lutrinae',
-        },
-        {
-            label: 'Crocodile',
-            value: 'crocodile',
-            description: 'A large semiaquatic reptile',
-        },
-    ];
+export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
+    const title = useRef<HTMLInputElement | null>(null);
+    const description = useRef<HTMLTextAreaElement | null>(null);
+    const cryptoPrice = useRef<HTMLInputElement | null>(null);
+
+    const [published, setPublished] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [fileUploaded, setFileUploaded] = useState<File | null>(null);
+    const [cates, setCategories] = useState<TCategory[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const { mint, createAccount, mintToken, nft } = useMetaplexUmi();
+    const wallet = useWallet();
+    const { uploadArtwork } = useNFTStorage();
+    const { add } = useArtwork();
+    const { categories: retrieveCategories } = useCategory();
+    const umi = useUmi();
+
+    const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (!e.target) return;
+        if (!e.target.files) return;
+        setFileUploaded(e.target.files[0]);
+    };
+
+    const addArtwork = async () => {
+        try {
+            const walletAddress = localStorage.getItem('walletAddress');
+            if (!title.current?.value || !description.current?.value) return;
+            if (!walletAddress) return;
+            setIsLoading(true);
+
+            const signer = mint(umi);
+            umi.use(walletAdapterIdentity(wallet));
+
+            const { url: metadata, data } = await uploadArtwork({
+                title: title.current.value,
+                description: description.current.value,
+                owner: walletAddress,
+                artwork: fileUploaded as File,
+            });
+
+            // const accountResult = await createAccount(umi, signer, {
+            //     name: title.current.value,
+            //     uri: data.image.toString(),
+            // });
+
+            // const mintResult = await mintToken(
+            //     umi,
+            //     signer.publicKey,
+            //     signer,
+            //     walletAddress,
+            // );
+            // console.log(accountResult.result);
+            // console.log(mintResult.result);
+
+            const result = await nft(umi, signer, {
+                name: title.current.value,
+                uri: data.image.toString(),
+                walletAddress,
+            });
+            console.log(result);
+            console.log(signer.publicKey);
+
+            await add({
+                title: title.current.value,
+                description: description.current.value,
+                categories: selectedCategories.join(','),
+                cryptoPrice:
+                    parseFloat(cryptoPrice.current?.value as string) || 0.0,
+                currency: 'SOL',
+                url: data.image.toString(),
+                metadata,
+                published,
+            });
+            if (onClose) onClose();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const saveAsDraft = () => {};
+
+    const addCategory = (category: string) => {
+        if (!category || category.length === 0) return;
+        setSelectedCategories([...selectedCategories, category]);
+    };
+
+    const removeCategory = (remove: string) => {
+        setSelectedCategories(
+            selectedCategories.filter((selected) => selected !== remove),
+        );
+    };
+
+    useEffect(() => {
+        retrieveCategories()
+            .then((res) => setCategories(res))
+            .catch((e) => console.error(e));
+    }, []);
+
     return (
         <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} size="4xl">
             <ModalContent>
@@ -101,38 +139,59 @@ export const PostModal = ({
                                 labelPlacement="outside"
                                 placeholder="..."
                                 startContent=""
+                                defaultValue=""
                                 type="search"
+                                ref={title}
                             />
                             <Textarea
                                 label="Description"
                                 labelPlacement="outside"
                                 placeholder="..."
                                 disableAutosize
+                                defaultValue=""
                                 maxRows={4}
                                 size="lg"
+                                ref={description}
                             />
                             <Autocomplete
                                 label="Categories"
                                 labelPlacement="outside"
+                                onSelectionChange={addCategory}
                                 placeholder="...">
-                                {animals.map((animal) => (
+                                {cates.map((c) => (
                                     <AutocompleteItem
-                                        key={animal.value}
-                                        value={animal.value}>
-                                        {animal.label}
+                                        key={c.display}
+                                        value={c.display}>
+                                        {c.display}
                                     </AutocompleteItem>
                                 ))}
                             </Autocomplete>
-                            <Textarea disableAutosize maxRows={4} size="lg" />
+                            <Card shadow="none">
+                                <CardBody className="flex flex-row gap-2">
+                                    {selectedCategories.map(
+                                        (selected, index) => (
+                                            <Chip
+                                                key={index}
+                                                onClose={() =>
+                                                    removeCategory(selected)
+                                                }
+                                                variant="flat">
+                                                {selected}
+                                            </Chip>
+                                        ),
+                                    )}
+                                </CardBody>
+                            </Card>
                         </span>
                         <span className="col-span-6">
-                            <Dropzone />
+                            <Dropzone onChange={handleUpload} />
                             <Spacer />
                             <Spacer />
                             <Spacer />
                             <span className="grid grid-cols-6 gap-3">
                                 <Input
                                     aria-label="crypto-price"
+                                    defaultValue="0.0"
                                     classNames={{
                                         inputWrapper: 'bg-default-100',
                                         input: 'text-sm',
@@ -143,6 +202,7 @@ export const PostModal = ({
                                     placeholder="0.00"
                                     startContent=""
                                     type="number"
+                                    ref={cryptoPrice}
                                 />
                                 <Input
                                     aria-label="crypto-currency"
@@ -158,7 +218,11 @@ export const PostModal = ({
                                     type="text"
                                     readOnly
                                 />
-                                <Checkbox>Published?</Checkbox>
+                                <Checkbox
+                                    isSelected={published}
+                                    onValueChange={setPublished}>
+                                    Published?
+                                </Checkbox>
                             </span>
                         </span>
                     </div>
@@ -168,8 +232,16 @@ export const PostModal = ({
                         title="post"
                         color="primary"
                         variant="flat"
-                        onPress={onPost}>
+                        isLoading={isLoading}
+                        onPress={addArtwork}>
                         Add to your creation
+                    </Button>
+                    <Button
+                        title="check"
+                        color="secondary"
+                        variant="flat"
+                        onPress={saveAsDraft}>
+                        Save as Draft
                     </Button>
                 </ModalFooter>
             </ModalContent>

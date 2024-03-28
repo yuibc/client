@@ -1,7 +1,6 @@
 import { ArtBlock } from '@/components/art-block';
 import { FooterSubscription } from '@/components/footer-subscription';
 import { GgTrendingIcon, MdiCreationIcon } from '@/components/icons';
-import { title, subtitle } from '@/components/primitives';
 import { SectionContent } from '@/components/section-content';
 import { fixedArts } from '@/config/fixed-data';
 
@@ -16,12 +15,13 @@ export default function Home() {
                 {fixedArts.map((item, index) => (
                     <ArtBlock
                         key={index}
+                        id={item.id}
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
-                        convertedPrice={item.convertedPrice}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
+                        creator={item.creator}
                     />
                 ))}
             </SectionContent>
@@ -33,12 +33,13 @@ export default function Home() {
                 {fixedArts.map((item, index) => (
                     <ArtBlock
                         key={index}
+                        id={item.id}
                         title={item.title}
                         currency={item.currency}
                         cryptoCurrency={item.cryptoCurrency}
-                        convertedPrice={item.convertedPrice}
                         cryptoPrice={item.cryptoPrice}
                         url={item.url}
+                        creator={item.creator}
                     />
                 ))}
             </SectionContent>

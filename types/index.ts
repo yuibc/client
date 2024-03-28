@@ -5,16 +5,25 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type ArtBlockProps = {
+    id: number;
     title: string;
     url: string;
     cryptoPrice: number;
-    convertedPrice: number;
     cryptoCurrency: string;
     currency: string;
     isDashboardItem: boolean;
+    disabled: boolean;
+    creator: string;
 };
 
 export type TArtBlock = ArtBlockProps;
+
+export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'disabled'> & {
+    description: string;
+    categories: string;
+    metadata: string;
+    published: boolean;
+};
 
 export type SectionProps = {
     header: string;
@@ -40,7 +49,10 @@ export type CreatorBlockProps = {
     borderless: boolean;
 };
 
-export type TCreator = CreatorBlockProps;
+export type TCreator = Omit<
+    Omit<CreatorBlockProps, 'noFollowButton'>,
+    'borderless'
+>;
 
 export type CartDrawerProps = {
     title: string;
@@ -59,16 +71,18 @@ export type CartItemProps = {
     title: string;
     author: string;
     cryptoPrice: number;
-    convertedPrice: number;
     currency: string;
     cryptoCurrency: string;
 };
 
 export type CartItemV2Props = CartItemProps & {
     value: string;
+    url: string;
+    metadata: string;
 };
 
 export type UserDropdownProps = {
+    onClick: () => void;
     displayName: string;
 };
 
@@ -80,4 +94,27 @@ export type PostModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onPost: () => void;
+};
+
+export type TAuth = {
+    email: string;
+    walletAddress: string;
+    password: string;
+};
+
+export type TUser = {
+    email: string;
+    displayName: string;
+    walletAddress: string;
+};
+
+export type TInsensitiveUser = Omit<TUser, 'password'>;
+
+export type TCart = {
+    user: number;
+    artwork: number;
+};
+
+export type TCategory = {
+    display: string;
 };

@@ -18,23 +18,42 @@ import NextLink from 'next/link';
 import clsx from 'clsx';
 
 import { ThemeSwitch } from '@/components/theme-switch';
-import {
-    GithubIcon,
-    Logo,
-    WalletLoginIcon,
-    SearchIcon,
-    CartIcon,
-} from '@/components/icons';
+import { GithubIcon, Logo, SearchIcon, CartIcon } from '@/components/icons';
 import { LoginPopup } from './login-popup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
-import { Badge } from '@nextui-org/react';
+import { Badge, Chip } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
+import { isAuthAtom, shoppingCartAtom, useUser } from '@/services';
+import { TInsensitiveUser } from '@/types';
+import { Wallet } from './wallet';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useAtomValue } from 'jotai';
 
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const enabled = true;
+    const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
+    const { findById } = useUser();
+    const wallet = useWallet();
+    const isAuth = useAtomValue(isAuthAtom);
+    const shoppingCart = useAtomValue(shoppingCartAtom);
+
+    const fetchUserInfo = async () => {
+        const id = localStorage.getItem('User');
+        if (!id) return;
+        const user = await findById(id);
+        setUserInfo(user as TInsensitiveUser);
+    };
+
+    const check = () => {
+        console.log(`Context: ${wallet.connected}`);
+    };
+
+    useEffect(() => {
+        // setIsAuth(localStorage.getItem('Access-Token') !== null);
+        fetchUserInfo();
+    }, [isAuth]);
 
     const searchInput = (
         <Input
@@ -90,23 +109,28 @@ export const Navbar = () => {
 
             <NavbarContent className="hidden sm:flex basis-1 sm:basis-full">
                 <NavbarItem className="hidden md:flex">
-                    {enabled ? (
-                        <UserDropdown displayName="@adudarkwa" />
-                    ) : (
-                        <Button
-                            isExternal
-                            as={Link}
-                            size="md"
-                            className="text-sm font-semibold text-default-600 bg-default-100"
-                            startContent={<WalletLoginIcon />}
-                            onPress={() => setLoginPopup(true)}
-                            variant="flat">
-                            Login
-                        </Button>
-                    )}
+                    <Chip
+                        variant="flat"
+                        color={wallet.connected ? 'success' : 'default'}>
+                        {wallet.connected ? 'Connected' : 'Not connected'}
+                    </Chip>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
-                    <Badge content="1" color="danger">
+                    {isAuth ? (
+                        <UserDropdown
+                            displayName={userInfo.displayName}
+                            onClick={check}
+                        />
+                    ) : (
+                        <Wallet />
+                    )}
+                </NavbarItem>
+
+                <NavbarItem className="hidden md:flex">
+                    <Badge
+                        content={shoppingCart.length}
+                        isInvisible={shoppingCart.length === 0}
+                        color="danger">
                         <Button
                             isExternal
                             isIconOnly
