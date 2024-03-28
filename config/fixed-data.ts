@@ -1,45 +1,50 @@
-import { TArtBlock, TCreator } from '@/types';
+import { TArtwork, TCreator } from '@/types';
 
-export const fixedArts: Omit<TArtBlock, 'isDashboardItem'>[] = [
+export const fixedArts: Partial<TArtwork>[] = [
     {
-        artworkId: 1,
+        id: 1,
         title: 'Horses for Courses',
         url: '/assets/output_3761611179_0.jpg',
         cryptoPrice: 1,
         cryptoCurrency: 'SOL',
         currency: '$',
+        creator: '@creator1@ftp',
     },
     {
-        artworkId: 2,
+        id: 2,
         title: 'Clockwork',
         url: '/assets/output_3761611179_1.jpg',
         cryptoPrice: 0.012,
         cryptoCurrency: 'SOL',
         currency: '$',
+        creator: '@Xreator1@ftp',
     },
     {
-        artworkId: 3,
+        id: 3,
         title: 'Abstraction',
         url: '/assets/output_3952756105_0.jpg',
         cryptoPrice: 0.0025,
         cryptoCurrency: 'SOL',
         currency: '$',
+        creator: '@Areator1@ftp',
     },
     {
-        artworkId: 4,
+        id: 4,
         title: 'Uniqueness',
         url: '/assets/6769c8aa-23bf-43c9-93c6-204744e427db.jpeg',
         cryptoPrice: 0.001,
         cryptoCurrency: 'SOL',
         currency: '$',
+        creator: '@Oreator1@ftp',
     },
     {
-        artworkId: 5,
+        id: 5,
         title: 'Empowered',
         url: '/assets/output_3761611179_1.jpg',
         cryptoPrice: 0.01,
         cryptoCurrency: 'SOL',
         currency: '$',
+        creator: '@Freator1@ftp',
     },
 ];
 
