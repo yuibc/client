@@ -5,7 +5,6 @@ export const CartItem = ({
     title,
     author,
     cryptoPrice,
-    convertedPrice,
     currency,
     cryptoCurrency,
 }: Partial<CartItemProps>) => {
@@ -28,9 +27,7 @@ export const CartItem = ({
                     <h3 className="font-semibold">
                         {cryptoPrice} {cryptoCurrency}
                     </h3>
-                    <h5 className="text-default-500">
-                        {currency} {convertedPrice}
-                    </h5>
+                    <h5 className="text-default-500">{currency}</h5>
                 </span>
             </div>
         </div>
