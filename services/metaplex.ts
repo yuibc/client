@@ -1,10 +1,8 @@
-import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import {
     TokenStandard,
     createNft,
     createV1,
     mintV1,
-    mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
     KeypairSigner,
@@ -22,10 +20,6 @@ type TMintData = {
 };
 
 export function useMetaplexUmi() {
-    const umi = createUmi('https://api.testnet.solana.com/').use(
-        mplTokenMetadata(),
-    );
-
     const sellerFeeBasisPoints = percentAmount(2.0, 2);
 
     const mint = (umi: Umi) => generateSigner(umi);
@@ -71,7 +65,6 @@ export function useMetaplexUmi() {
         }).sendAndConfirm(umi);
 
     return {
-        umi,
         mint,
         nft,
         createAccount,
