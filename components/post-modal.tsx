@@ -18,7 +18,6 @@ import { PostModalProps, TCategory } from '@/types';
 import { Dropzone } from './dropzone';
 import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useCategory, useUmi } from '@/services';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
