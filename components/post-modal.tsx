@@ -18,7 +18,6 @@ import { PostModalProps, TCategory } from '@/types';
 import { Dropzone } from './dropzone';
 import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useCategory, useUmi } from '@/services';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
@@ -87,9 +86,14 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
 
     const saveAsDraft = () => {};
 
-    const addCategory = (category: string) => {
-        if (!category || category.length === 0) return;
-        setSelectedCategories([...selectedCategories, category]);
+    const addCategory = (category: unknown) => {
+        if (!category || (category as string).length === 0) return;
+        const added =
+            selectedCategories.filter(
+                (selected) => selected === (category as string),
+            ).length === 1;
+        if (added) return;
+        setSelectedCategories([...selectedCategories, category as string]);
     };
 
     const removeCategory = (remove: string) => {
@@ -102,6 +106,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
         retrieveCategories()
             .then((res) => setCategories(res))
             .catch((e) => console.error(e));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -137,7 +142,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                             <Autocomplete
                                 label="Categories"
                                 labelPlacement="outside"
-                                onSelectionChange={addCategory}
+                                onSelectionChange={(key) => addCategory(key)}
                                 placeholder="...">
                                 {cates.map((c) => (
                                     <AutocompleteItem

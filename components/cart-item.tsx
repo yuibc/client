@@ -5,7 +5,6 @@ export const CartItem = ({
     title,
     author,
     cryptoPrice,
-    convertedPrice,
     currency,
     cryptoCurrency,
 }: Partial<CartItemProps>) => {
@@ -18,6 +17,7 @@ export const CartItem = ({
                     height={150}
                     src=""
                     fallbackSrc="https://via.placeholder.com/300x200"
+                    alt="https://via.placeholder.com/300x200"
                 />
                 <span className="flex flex-col col-span-2">
                     <h3 className="text-xl font-semibold">{title}</h3>
@@ -27,9 +27,7 @@ export const CartItem = ({
                     <h3 className="font-semibold">
                         {cryptoPrice} {cryptoCurrency}
                     </h3>
-                    <h5 className="text-default-500">
-                        {currency} {convertedPrice}
-                    </h5>
+                    <h5 className="text-default-500">{currency}</h5>
                 </span>
             </div>
         </div>

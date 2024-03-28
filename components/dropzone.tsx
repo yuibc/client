@@ -50,4 +50,6 @@ export const Dropzone = forwardRef(
         );
     },
 );
+
+Dropzone.displayName = 'Dropzone';
 export default Dropzone;
