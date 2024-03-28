@@ -5,7 +5,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type ArtBlockProps = {
-    artworkId: number;
+    id: number;
     title: string;
     url: string;
     cryptoPrice: number;
@@ -13,14 +13,12 @@ export type ArtBlockProps = {
     currency: string;
     isDashboardItem: boolean;
     disabled: boolean;
+    creator: string;
 };
 
 export type TArtBlock = ArtBlockProps;
 
-export type TArtwork = Omit<
-    Omit<Omit<TArtBlock, 'isDashboardItem'>, 'artworkId'>,
-    'disabled'
-> & {
+export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'disabled'> & {
     description: string;
     categories: string;
     metadata: string;
@@ -106,7 +104,6 @@ export type TAuth = {
 
 export type TUser = {
     email: string;
-    password: string;
     displayName: string;
     walletAddress: string;
 };
