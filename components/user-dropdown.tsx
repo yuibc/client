@@ -37,6 +37,7 @@ export const UserDropdown = ({
 
     useEffect(() => {
         fetchFollowerCount();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <Dropdown>

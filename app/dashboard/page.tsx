@@ -26,6 +26,7 @@ export default function ArtworkManagement() {
         getArtworks(walletAddress)
             .then((data) => setArtworks(data))
             .catch((e) => console.error(e));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
 
     return (

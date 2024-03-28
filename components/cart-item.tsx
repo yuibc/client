@@ -18,6 +18,7 @@ export const CartItem = ({
                     height={150}
                     src=""
                     fallbackSrc="https://via.placeholder.com/300x200"
+                    alt="https://via.placeholder.com/300x200"
                 />
                 <span className="flex flex-col col-span-2">
                     <h3 className="text-xl font-semibold">{title}</h3>

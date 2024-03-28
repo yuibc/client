@@ -57,6 +57,7 @@ export const CartDrawer = ({
         solanaToUsd().then((data) =>
             setConvertedPrice(calculatePrice(data, totalPrice() || 0.0) + 2.0),
         );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

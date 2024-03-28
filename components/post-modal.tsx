@@ -101,6 +101,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
         retrieveCategories()
             .then((res) => setCategories(res))
             .catch((e) => console.error(e));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

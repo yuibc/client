@@ -29,6 +29,7 @@ export const CartItemV2 = ({
                     height={90}
                     src={url}
                     fallbackSrc="https://via.placeholder.com/300x200"
+                    alt="https://via.placeholder.com/300x200"
                 />
                 <span className="flex flex-col">
                     <h3 className="text-lg font-semibold">{title}</h3>
