@@ -14,7 +14,7 @@ import {
     IcBaselineEmailIcon,
     ParkSolidConnectIcon,
 } from './icons';
-import { useUser, useAuth, usePhantomProvider } from '@/services';
+import { useUser, useAuth } from '@/services';
 import { useRef, useState } from 'react';
 import { generateRandomString } from '@/helpers';
 
@@ -26,7 +26,6 @@ export const LoginPopup = ({
 }: Partial<LoginPopupProps>) => {
     const { create, findByWalletAddress } = useUser();
     const { authenticate, authenticateWithWallet } = useAuth();
-    const { isPhantomInstalled, establishConnection } = usePhantomProvider();
     const email = useRef<HTMLInputElement | null>(null);
     const password = useRef<HTMLInputElement | null>(null);
     const displayName = useRef<HTMLInputElement | null>(null);
@@ -37,50 +36,6 @@ export const LoginPopup = ({
     const switchState = () => {
         setIsSignUp(!isSignUp);
         setIsConnect(false);
-    };
-
-    const signup = async () => {
-        await create({
-            email: email.current?.value,
-            displayName: displayName.current?.value,
-        });
-        await authenticate({
-            email: email.current?.value,
-            password: password.current?.value,
-        });
-        location.reload();
-    };
-
-    const connect = async () => {
-        await authenticate({
-            email: email.current?.value,
-            password: password.current?.value,
-        });
-        location.reload();
-    };
-
-    const connectWithPhantom = async () => {
-        if (!isPhantomInstalled()) {
-            alert("You haven't installed Phantom app yet!");
-            return;
-        }
-        setIsSignUpContinue(true);
-    };
-
-    const finishConnection = async () => {
-        const walletAddress = await establishConnection();
-        const user = await findByWalletAddress(walletAddress);
-        if (!user) {
-            await create({
-                email: '',
-                displayName: generateRandomString(10),
-                walletAddress,
-            });
-            await authenticateWithWallet(walletAddress);
-            location.reload();
-        }
-        await authenticateWithWallet(walletAddress);
-        location.reload();
     };
 
     return (
@@ -169,7 +124,6 @@ export const LoginPopup = ({
                                 {isSignUp ? (
                                     <Button
                                         title="Sign up with email"
-                                        onPress={signup}
                                         variant="flat"
                                         startContent={<ParkSolidConnectIcon />}>
                                         Sign up
@@ -177,7 +131,6 @@ export const LoginPopup = ({
                                 ) : isConnect ? (
                                     <Button
                                         title="Connect with email"
-                                        onPress={connect}
                                         variant="flat"
                                         startContent={<ParkSolidConnectIcon />}>
                                         Connect
@@ -204,7 +157,6 @@ export const LoginPopup = ({
                         <Button
                             className="col-span-3"
                             title="Connect via Phantom"
-                            onClick={connectWithPhantom}
                             variant="flat"
                             startContent={<ArcticonsPhantomBlackIcon />}>
                             Connect via Phantom
@@ -266,7 +218,6 @@ export const LoginPopup = ({
                         <Button
                             className="col-span-3"
                             title="Connect"
-                            onClick={finishConnection}
                             variant="flat"
                             startContent={<ArcticonsPhantomBlackIcon />}>
                             Connect
