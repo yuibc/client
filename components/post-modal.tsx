@@ -19,7 +19,6 @@ import { Dropzone } from './dropzone';
 import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { useCategory, useUmi } from '@/services';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
@@ -32,8 +31,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const [fileUploaded, setFileUploaded] = useState<File | null>(null);
     const [cates, setCategories] = useState<TCategory[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const { mint, createAccount, mintToken, nft } = useMetaplexUmi();
-    const wallet = useWallet();
+    const { mint, nft } = useMetaplexUmi();
     const { uploadArtwork } = useNFTStorage();
     const { add } = useArtwork();
     const { categories: retrieveCategories } = useCategory();
@@ -54,7 +52,6 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
             setIsLoading(true);
 
             const signer = mint(umi);
-            umi.use(walletAdapterIdentity(wallet));
 
             const { url: metadata, data } = await uploadArtwork({
                 title: title.current.value,
@@ -63,27 +60,11 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 artwork: fileUploaded as File,
             });
 
-            // const accountResult = await createAccount(umi, signer, {
-            //     name: title.current.value,
-            //     uri: data.image.toString(),
-            // });
-
-            // const mintResult = await mintToken(
-            //     umi,
-            //     signer.publicKey,
-            //     signer,
-            //     walletAddress,
-            // );
-            // console.log(accountResult.result);
-            // console.log(mintResult.result);
-
-            const result = await nft(umi, signer, {
+            await nft(umi, signer, {
                 name: title.current.value,
                 uri: data.image.toString(),
                 walletAddress,
             });
-            console.log(result);
-            console.log(signer.publicKey);
 
             await add({
                 title: title.current.value,
