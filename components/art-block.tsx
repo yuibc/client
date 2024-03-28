@@ -29,7 +29,8 @@ export const ArtBlock = ({
     cryptoPrice,
     cryptoCurrency,
     isDashboardItem,
-    artworkId,
+    id,
+    creator,
 }: Partial<ArtBlockProps>) => {
     const { add } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
@@ -42,15 +43,15 @@ export const ArtBlock = ({
         const items = JSON.parse(localStorage.getItem('Saved-Items') as string);
         if (!userId) {
             if (Object.keys(items).length === 0) {
-                const savedItems = Object.assign({ [`${artworkId}`]: 1 }, {});
+                const savedItems = Object.assign({ [`${id}`]: 1 }, {});
                 localStorage.setItem('Saved-Items', JSON.stringify(savedItems));
             } else {
                 localStorage.setItem(
                     'Saved-Items',
-                    JSON.stringify({ ...items, [`${artworkId}`]: 1 }),
+                    JSON.stringify({ ...items, [`${id}`]: 1 }),
                 );
             }
-            setAddedItems({ ...addedItems, [`${artworkId}`]: 1 });
+            setAddedItems({ ...addedItems, [`${id}`]: 1 });
             setShoppingCart([
                 ...shoppingCart,
                 {
@@ -59,17 +60,19 @@ export const ArtBlock = ({
                     currency,
                     cryptoPrice,
                     cryptoCurrency,
+                    creator,
+                    id,
                 },
             ]);
             return;
         }
-        await add({ user: parseInt(userId as string), artwork: artworkId });
+        await add({ user: parseInt(userId as string), artwork: id });
     };
 
     useEffect(() => {
-        // solanaToUsd().then((data) =>
-        //     setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
-        // );
+        solanaToUsd().then((data) =>
+            setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
+        );
     }, []);
 
     return (
@@ -92,7 +95,7 @@ export const ArtBlock = ({
                                 {cryptoPrice} {cryptoCurrency}
                             </span>
                             <span className="text-default-500">
-                                {convertedPrice} {currency}
+                                {currency} {convertedPrice}
                             </span>
                         </small>
                     </span>
@@ -126,7 +129,7 @@ export const ArtBlock = ({
                             startContent={<CartIcon />}
                             variant="flat"
                             onPress={addToCart}
-                            isDisabled={addedItems[`${artworkId}`] === 1}
+                            isDisabled={addedItems[`${id}`] === 1}
                         />
                     )}
                 </div>
