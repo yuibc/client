@@ -4,7 +4,6 @@ import { TInsensitiveUser, TUser } from '@/types';
 export function useUser(url = BASE_URL) {
     const create = async ({
         email,
-        password,
         displayName,
         walletAddress,
     }: Partial<TUser>) => {
@@ -16,7 +15,6 @@ export function useUser(url = BASE_URL) {
                 },
                 body: JSON.stringify({
                     email,
-                    password,
                     displayName,
                     walletAddress,
                 }),
