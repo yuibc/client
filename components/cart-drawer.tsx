@@ -6,7 +6,12 @@ import { CartItemV2 } from './cart-item-v2';
 import { useEffect, useState } from 'react';
 import { RadioV2 } from './radio-v2';
 import { AnimatePresence, motion } from 'framer-motion';
-import { addedItemsAtom, shoppingCartAtom, useCart } from '@/services';
+import {
+    addedItemsAtom,
+    shoppingCartAtom,
+    useCart,
+    useCryptoConversion,
+} from '@/services';
 import { toIPFSGateway } from '@/helpers';
 import { useAtom, useSetAtom } from 'jotai';
 
@@ -18,14 +23,24 @@ export const CartDrawer = ({
     const [items, setItems] = useState<TArtwork[]>([]);
     const [groupSelected, setGroupSelected] = useState<string[]>([]);
     const { cartByUser } = useCart();
+    const { solanaToUsd, calculatePrice } = useCryptoConversion();
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const setAddedItems = useSetAtom(addedItemsAtom);
+    const [convertedPrice, setConvertedPrice] = useState('');
 
     const clear = () => {
         setShoppingCart([]);
         setAddedItems({});
         localStorage.setItem('Saved-Items', '{}');
     };
+
+    const totalPrice = () =>
+        shoppingCart.reduce(
+            (accumulator, current) =>
+                accumulator +
+                parseFloat(current.cryptoPrice as unknown as string),
+            0,
+        );
 
     useEffect(() => {
         const userId = localStorage.getItem('User');
@@ -37,6 +52,11 @@ export const CartDrawer = ({
                 .then((item) => setItems(item))
                 .catch((e) => console.error(e));
         }
+
+        if (shoppingCart.length === 0) return;
+        solanaToUsd().then((data) =>
+            setConvertedPrice(calculatePrice(data, totalPrice() || 0.0) + 2.0),
+        );
     }, []);
 
     return (
@@ -90,9 +110,8 @@ export const CartDrawer = ({
                                                     cryptoPrice={
                                                         item.cryptoPrice
                                                     }
-                                                    url={toIPFSGateway(
-                                                        item.url as string,
-                                                    )}
+                                                    url={item.url}
+                                                    author={item.creator}
                                                 />
                                             ))}
                                         </CheckboxGroup>
@@ -122,7 +141,14 @@ export const CartDrawer = ({
                                         </div>
                                         <div className="col-span-2 italic">
                                             <h3>$2</h3>
-                                            <h3>2.02 SOL ($ 196)</h3>
+                                            <h3>
+                                                {totalPrice()} SOL{' '}
+                                                {totalPrice() > 0 && (
+                                                    <span className="italic text-default">
+                                                        $ {convertedPrice}
+                                                    </span>
+                                                )}
+                                            </h3>
                                         </div>
                                     </span>
                                     <div className="flex justify-center items-center">
