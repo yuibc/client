@@ -635,3 +635,73 @@ export const TablerMoodEmptyFilledIcon: React.FC<IconSvgProps> = ({
         </svg>
     );
 };
+
+export const IconParkSolidAddPic: React.FC<IconSvgProps> = ({
+    size = 36,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 48 48"
+            {...props}>
+            <g
+                fill="none"
+                stroke="#a889ff"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeMiterlimit={10}
+                strokeWidth={4}>
+                <path d="M38 21v19a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2h18.364"></path>
+                <path
+                    fill="#a889ff"
+                    d="M12 31.03L18 23l3 3l3.5-5.5L32 31.03z"></path>
+                <path d="M34 10h8m-4.005-4.205v8"></path>
+            </g>
+        </svg>
+    );
+};
+
+export const FluentPlugConnected24Filled: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                d="M19.49 5.57a5.999 5.999 0 0 1-1.893 8.962c-.649.351-1.43.135-1.952-.386l-5.79-5.791c-.522-.522-.738-1.303-.388-1.952A5.999 5.999 0 0 1 18.43 4.51l2.29-2.29a.75.75 0 1 1 1.061 1.06zM3.28 21.78l2.29-2.29a5.999 5.999 0 0 0 8.962-1.893c.351-.649.135-1.43-.387-1.952l-5.79-5.79c-.522-.522-1.303-.738-1.952-.388A5.999 5.999 0 0 0 4.51 18.43l-2.29 2.29a.75.75 0 1 0 1.06 1.061"></path>
+        </svg>
+    );
+};
+
+export const GgArrowsExchangeV: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                d="M12.984 15a1 1 0 0 0 1.848.53l2.688-2.687a1 1 0 0 0-1.415-1.414l-1.12 1.12V5a1 1 0 0 0-2 0v9.978zm-1.968-6a1 1 0 0 0-1.848-.53l-2.687 2.687a1 1 0 1 0 1.414 1.414l1.121-1.12V19a1 1 0 1 0 2 0V9.022z"></path>
+        </svg>
+    );
+};
