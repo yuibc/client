@@ -31,6 +31,7 @@ export const CartDrawer = ({
     const setAddedItems = useSetAtom(addedItemsAtom);
     const [convertedPrice, setConvertedPrice] = useState('');
     const { transferSolTo } = useTransaction(useUmi());
+    const { onSuccess, onError } = useToast();
 
     const clear = () => {
         setShoppingCart([]);
@@ -64,9 +65,9 @@ export const CartDrawer = ({
                 getPrice(),
                 publicKey('E29LCxP6QszBwYst82QNwscKS7o6NLecLNPGd2qtFFe'),
             );
-            useToast().onSuccess('Completed Payment');
+            onSuccess('Completed Payment');
         } catch (e) {
-            useToast().onError('Cancelled Payment');
+            onError('Cancelled Payment');
         }
     };
 
