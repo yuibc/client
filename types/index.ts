@@ -1,3 +1,4 @@
+import { Instruction } from '@metaplex-foundation/umi';
 import { ReactNode, SVGProps } from 'react';
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -23,6 +24,7 @@ export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'disabled'> & {
     categories: string;
     metadata: string;
     published: boolean;
+    instructions: Instruction[];
 };
 
 export type SectionProps = {
