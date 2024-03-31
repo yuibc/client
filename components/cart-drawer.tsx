@@ -14,6 +14,7 @@ import {
     useTransaction,
     useUmi,
     useToast,
+    useUser,
 } from '@/services';
 import { useAtom, useSetAtom } from 'jotai';
 import { publicKey } from '@metaplex-foundation/umi';
@@ -32,6 +33,14 @@ export const CartDrawer = ({
     const [convertedPrice, setConvertedPrice] = useState('');
     const { transferSolTo } = useTransaction(useUmi());
     const { onSuccess, onError } = useToast();
+    const { findWalletAddressByDisplayName } = useUser();
+    const [isLoading, setIsLoading] = useState(false);
+
+    type TSelectedItems = {
+        title: string;
+        cryptoPrice: number;
+        author: string;
+    };
 
     const clear = () => {
         setShoppingCart([]);
@@ -43,10 +52,9 @@ export const CartDrawer = ({
     const getPrice = () => {
         let total = 0;
         if (groupSelected.length === 0) return 0;
-        for (const item of groupSelected) {
-            const target: { title: string; cryptoPrice: number } =
-                JSON.parse(item);
-            total += target.cryptoPrice;
+        for (const selected of groupSelected) {
+            const parsed: TSelectedItems = JSON.parse(selected);
+            total += parsed.cryptoPrice as number;
         }
         return total;
     };
@@ -61,13 +69,42 @@ export const CartDrawer = ({
 
     const completePayment = async () => {
         try {
-            await transferSolTo(
-                getPrice(),
-                publicKey('E29LCxP6QszBwYst82QNwscKS7o6NLecLNPGd2qtFFe'),
-            );
+            setIsLoading(true);
+            const selected = new Map<string, number>();
+            for (const item of groupSelected) {
+                const target: TSelectedItems = JSON.parse(item);
+                const { walletAddress } = await findWalletAddressByDisplayName(
+                    target.author,
+                );
+                if (selected.has(walletAddress)) {
+                    const current = selected.get(walletAddress);
+                    selected.set(
+                        walletAddress,
+                        (current as number) + target.cryptoPrice,
+                    );
+                } else {
+                    selected.set(walletAddress, target.cryptoPrice);
+                }
+            }
+
+            if (selected.size > 1) {
+                onError(
+                    "You selected artworks by more than one creator. \n\nCurrently, the platform doesn't support multiple transfers yet. \n\nPlease select only artwork from a specific creator!",
+                    6000,
+                );
+                return;
+            }
+
+            for (const [pubkey, total] of selected) {
+                await transferSolTo(total, publicKey(pubkey));
+            }
+
             onSuccess('Completed Payment');
+            clear();
         } catch (e) {
             onError('Cancelled Payment');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -196,6 +233,10 @@ export const CartDrawer = ({
                                         <Button
                                             variant="flat"
                                             onPress={completePayment}
+                                            isLoading={isLoading}
+                                            isDisabled={
+                                                groupSelected.length === 0
+                                            }
                                             startContent={<WalletLoginIcon />}>
                                             Complete Purchase
                                         </Button>
