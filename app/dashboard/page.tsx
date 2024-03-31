@@ -1,12 +1,13 @@
 'use client';
 import { ArtBlock } from '@/components/art-block';
 import { Empty } from '@/components/empty';
+import { IconParkSolidAddPic } from '@/components/icons';
 import { PostModal } from '@/components/post-modal';
 import { SectionContent } from '@/components/section-content';
 import { toIPFSGateway } from '@/helpers';
-import { isAuthAtom, useArtwork } from '@/services';
+import { isAuthAtom, isUploadedAtom, useArtwork } from '@/services';
 import { TArtwork } from '@/types';
-import { Button, Tab, Tabs } from '@nextui-org/react';
+import { Tab, Tabs } from '@nextui-org/react';
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 
@@ -14,6 +15,7 @@ export default function ArtworkManagement() {
     const [openPostModal, setPostModal] = useState(false);
     const [artworks, setArtworks] = useState<TArtwork[]>([]);
     const isAuth = useAtomValue(isAuthAtom);
+    const isUploaded = useAtomValue(isUploadedAtom);
     const { artworks: getArtworks } = useArtwork();
     const handlePostModal = () => {
         setPostModal(!openPostModal);
@@ -27,20 +29,20 @@ export default function ArtworkManagement() {
             .then((data) => setArtworks(data))
             .catch((e) => console.error(e));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuth]);
+    }, [isAuth, isUploaded]);
 
     return (
         <section>
-            <div className="flex flex-col items-center mb-6">
-                <span className="my-7 flex flex-row gap-2">
-                    <Button
-                        variant="flat"
-                        color="primary"
-                        onPress={handlePostModal}>
-                        Post your work
-                    </Button>
-                </span>
-            </div>
+            {/* <div className="flex flex-col items-center mb-6"> */}
+            {/*     <span className="my-7 flex flex-row gap-2"> */}
+            {/*         <Button */}
+            {/*             variant="flat" */}
+            {/*             color="primary" */}
+            {/*             onPress={handlePostModal}> */}
+            {/*             Post your work */}
+            {/*         </Button> */}
+            {/*     </span> */}
+            {/* </div> */}
             <PostModal isOpen={openPostModal} onClose={handlePostModal} />
             <div className="flex w-full flex-col">
                 <Tabs
@@ -48,24 +50,39 @@ export default function ArtworkManagement() {
                     variant="underlined"
                     className="border-b border-default-50 py-7 font-semibold">
                     <Tab key="work" title={`Work (${artworks.length}/30)`}>
-                        <SectionContent gridSize={5} header="Your creations">
-                            {artworks.length === 0 ? (
-                                <Empty description="You haven't uploaded anything yet!" />
-                            ) : (
-                                artworks.map((artwork, index) => (
-                                    <ArtBlock
-                                        key={index}
-                                        isDashboardItem
-                                        url={toIPFSGateway(artwork.url)}
-                                        title={artwork.title}
-                                        id={artwork.id}
-                                        cryptoPrice={artwork.cryptoPrice}
-                                        cryptoCurrency={artwork.currency}
-                                        currency="$"
-                                        creator={artwork.creator}
-                                    />
-                                ))
-                            )}
+                        <SectionContent
+                            gridSize={5}
+                            header="Your creations"
+                            noHeader>
+                            {artworks.map((artwork, index) => (
+                                <ArtBlock
+                                    key={index}
+                                    isDashboardItem
+                                    url={toIPFSGateway(artwork.url)}
+                                    title={artwork.title}
+                                    id={artwork.id}
+                                    cryptoPrice={artwork.cryptoPrice}
+                                    cryptoCurrency={artwork.currency}
+                                    currency="$"
+                                    creator={artwork.creator}
+                                />
+                            ))}
+                            <label
+                                htmlFor="open-post-modal"
+                                className="flex flex-col items-center justify-center w-full border-2 border-primary-300 border-dashed rounded-lg cursor-pointer bg-default-900 dark:hover:bg-default-200 dark:bg-default-100 hover:bg-default-800 dark:border-default-100 dark:hover:border-default-200">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <IconParkSolidAddPic size={72} />
+                                    <p className="text-default-300 mt-2 font-semibold font-mono text-sm">
+                                        Upload your work
+                                    </p>
+                                </div>
+                                <input
+                                    id="open-post-modal"
+                                    type="button"
+                                    className="hidden"
+                                    onClick={handlePostModal}
+                                />
+                            </label>
                         </SectionContent>
                     </Tab>
                     <Tab key="purchased" title="Purchased">
