@@ -21,7 +21,7 @@ export const CartItemV2 = ({
                 ),
                 label: 'w-full',
             }}
-            value={JSON.stringify({ title, cryptoPrice })}>
+            value={JSON.stringify({ title, cryptoPrice, author })}>
             <div className="w-full flex justify-between gap-2">
                 <Image
                     className="col-span-1"
