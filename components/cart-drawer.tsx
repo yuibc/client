@@ -11,6 +11,8 @@ import {
     shoppingCartAtom,
     useCart,
     useCryptoConversion,
+    useTransaction,
+    useUmi,
 } from '@/services';
 import { toIPFSGateway } from '@/helpers';
 import { useAtom, useSetAtom } from 'jotai';
@@ -27,6 +29,8 @@ export const CartDrawer = ({
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const setAddedItems = useSetAtom(addedItemsAtom);
     const [convertedPrice, setConvertedPrice] = useState('');
+    const { signedTransaction, sendTransaction, confirmTransaction } =
+        useTransaction(useUmi());
 
     const clear = () => {
         setShoppingCart([]);
@@ -41,6 +45,13 @@ export const CartDrawer = ({
                 parseFloat(current.cryptoPrice as unknown as string),
             0,
         );
+
+    const sendAndConfirm = async () => {
+        const signed = await signedTransaction();
+        const signature = await sendTransaction(signed);
+        const result = await confirmTransaction(signature);
+        console.log(result);
+    };
 
     useEffect(() => {
         const userId = localStorage.getItem('User');
@@ -155,6 +166,7 @@ export const CartDrawer = ({
                                     <div className="flex justify-center items-center">
                                         <Button
                                             variant="flat"
+                                            onPress={sendAndConfirm}
                                             startContent={<WalletLoginIcon />}>
                                             Complete Purchase
                                         </Button>
