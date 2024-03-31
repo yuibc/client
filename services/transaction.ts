@@ -1,8 +1,12 @@
+import { transferSol } from '@metaplex-foundation/mpl-toolbox';
 import {
     Umi,
     transactionBuilder,
     Transaction,
     Instruction,
+    publicKey,
+    SolAmount,
+    PublicKey,
 } from '@metaplex-foundation/umi';
 
 export function useTransaction(umi: Umi) {
@@ -35,12 +39,28 @@ export function useTransaction(umi: Umi) {
             },
         });
 
+    const transferSolTo = (amount: number, destination: PublicKey) =>
+        transferSol(umi, {
+            amount: {
+                identifier: 'SOL',
+                decimals: 9,
+                basisPoints: BigInt(amount * 1_000_000_000),
+            },
+            source: umi.identity,
+            destination,
+        }).sendAndConfirm(umi);
+
+    const sendAndConfirm = async () => await builder.sendAndConfirm(umi);
+
     return {
+        builder,
         signedTransaction,
         sendTransaction,
         confirmTransaction,
         tx,
         serializeTransaction,
         deserializeTransaction,
+        sendAndConfirm,
+        transferSolTo,
     };
 }
