@@ -4,8 +4,6 @@ import {
     transactionBuilder,
     Transaction,
     Instruction,
-    publicKey,
-    SolAmount,
     PublicKey,
 } from '@metaplex-foundation/umi';
 
