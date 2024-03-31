@@ -21,6 +21,7 @@ export function useArtwork(baseUrl = BASE_URL) {
         categories,
         metadata,
         published,
+        instructions,
     }: Partial<TArtwork>) => {
         const walletAddress = localStorage.getItem('User');
         if (!walletAddress) return;
@@ -39,6 +40,7 @@ export function useArtwork(baseUrl = BASE_URL) {
                 categories,
                 metadata,
                 published,
+                instructions,
             }),
         });
         return await res.text();
