@@ -3,7 +3,7 @@ import { Image } from '@nextui-org/react';
 
 export const CartItem = ({
     title,
-    author,
+    creator,
     cryptoPrice,
     currency,
     cryptoCurrency,
@@ -21,7 +21,7 @@ export const CartItem = ({
                 />
                 <span className="flex flex-col col-span-2">
                     <h3 className="text-xl font-semibold">{title}</h3>
-                    <h5 className="text-lg italic">{author}</h5>
+                    <h5 className="text-lg italic">{creator}</h5>
                 </span>
                 <span className="flex col-span-1 justify-end items-end gap-1">
                     <h3 className="font-semibold">
