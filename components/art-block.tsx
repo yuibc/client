@@ -31,6 +31,8 @@ export const ArtBlock = ({
     isDashboardItem,
     id,
     creator,
+    mint,
+    walletAddress,
 }: Partial<ArtBlockProps>) => {
     const { add } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
@@ -62,6 +64,8 @@ export const ArtBlock = ({
                 cryptoCurrency,
                 creator,
                 id,
+                walletAddress,
+                mint,
             },
         ]);
         return;
