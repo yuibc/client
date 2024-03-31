@@ -59,7 +59,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 artwork: fileUploaded as File,
             });
 
-            await nft(umi, signer, {
+            const { instructions } = await nft(umi, signer, {
                 name: title.current.value,
                 uri: data.image.toString(),
                 walletAddress,
@@ -75,6 +75,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 url: data.image.toString(),
                 metadata,
                 published,
+                instructions,
             });
             if (onClose) onClose();
         } catch (e) {
