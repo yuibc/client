@@ -5,7 +5,18 @@ import {
     Transaction,
     Instruction,
     PublicKey,
+    Signer,
 } from '@metaplex-foundation/umi';
+import { createTransferCheckedInstruction } from '@solana/spl-token';
+import {
+    Connection,
+    LAMPORTS_PER_SOL,
+    PublicKey as PKey,
+    SystemProgram,
+    Transaction as Tx,
+    sendAndConfirmTransaction,
+    Keypair,
+} from '@solana/web3.js';
 
 export function useTransaction(umi: Umi) {
     const builder = transactionBuilder();
@@ -50,6 +61,44 @@ export function useTransaction(umi: Umi) {
 
     const sendAndConfirm = async () => await builder.sendAndConfirm(umi);
 
+    const transferOwnership = async (
+        amount: number,
+        currentOwner: string,
+        destOwner: string,
+        mint: string,
+    ) => {
+        const connection = new Connection(
+            process.env.NEXT_PUBLIC_RPC_ENDPOINT as string,
+            'confirmed',
+        );
+
+        const fromPublicKey = new PKey(currentOwner);
+        const toPublicKey = new PKey(destOwner);
+        const mintPublicKey = new PKey(mint);
+        const amountLamports = amount * LAMPORTS_PER_SOL;
+
+        const tx = new Tx()
+            .add(
+                SystemProgram.transfer({
+                    fromPubkey: fromPublicKey,
+                    toPubkey: toPublicKey,
+                    lamports: amountLamports,
+                }),
+            )
+            .add(
+                createTransferCheckedInstruction(
+                    fromPublicKey,
+                    mintPublicKey,
+                    toPublicKey,
+                    fromPublicKey,
+                    amountLamports,
+                    9,
+                ),
+            );
+
+        await sendAndConfirmTransaction(connection, tx, []);
+    };
+
     return {
         builder,
         signedTransaction,
@@ -60,5 +109,6 @@ export function useTransaction(umi: Umi) {
         deserializeTransaction,
         sendAndConfirm,
         transferSolTo,
+        transferOwnership,
     };
 }
