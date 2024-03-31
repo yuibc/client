@@ -39,40 +39,40 @@ export const ArtBlock = ({
     const [addedItems, setAddedItems] = useAtom(addedItemsAtom);
 
     const addToCart = async () => {
-        const userId = localStorage.getItem('User');
+        // const userId = localStorage.getItem('User');
         const items = JSON.parse(localStorage.getItem('Saved-Items') as string);
-        if (!userId) {
-            if (Object.keys(items).length === 0) {
-                const savedItems = Object.assign({ [`${id}`]: 1 }, {});
-                localStorage.setItem('Saved-Items', JSON.stringify(savedItems));
-            } else {
-                localStorage.setItem(
-                    'Saved-Items',
-                    JSON.stringify({ ...items, [`${id}`]: 1 }),
-                );
-            }
-            setAddedItems({ ...addedItems, [`${id}`]: 1 });
-            setShoppingCart([
-                ...shoppingCart,
-                {
-                    url,
-                    title,
-                    currency,
-                    cryptoPrice,
-                    cryptoCurrency,
-                    creator,
-                    id,
-                },
-            ]);
-            return;
+        // if (!userId) {
+        if (Object.keys(items).length === 0) {
+            const savedItems = Object.assign({ [`${id}`]: 1 }, {});
+            localStorage.setItem('Saved-Items', JSON.stringify(savedItems));
+        } else {
+            localStorage.setItem(
+                'Saved-Items',
+                JSON.stringify({ ...items, [`${id}`]: 1 }),
+            );
         }
-        await add({ user: parseInt(userId as string), artwork: id });
+        setAddedItems({ ...addedItems, [`${id}`]: 1 });
+        setShoppingCart([
+            ...shoppingCart,
+            {
+                url,
+                title,
+                currency,
+                cryptoPrice,
+                cryptoCurrency,
+                creator,
+                id,
+            },
+        ]);
+        return;
+        // }
+        // await add({ user: parseInt(userId as string), artwork: id });
     };
 
     useEffect(() => {
-        solanaToUsd().then((data) =>
-            setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
-        );
+        // solanaToUsd().then((data) =>
+        //     setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
+        // );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

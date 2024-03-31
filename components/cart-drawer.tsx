@@ -72,28 +72,28 @@ export const CartDrawer = ({
     };
 
     useEffect(() => {
-        const userId = localStorage.getItem('User');
+        // const userId = localStorage.getItem('User');
         const savedItems = localStorage.getItem('Saved-Items') || '';
-        if (!userId) {
-            const temp = [];
-            const json = JSON.parse(savedItems);
-            const savedArtworks = Object.keys(json);
-            if (shoppingCart.length < savedArtworks.length) {
-                for (const item of fixedArts) {
-                    if (json[item.id as number]) temp.push(item);
-                }
-                setShoppingCart([...shoppingCart, ...temp]);
+        // if (!userId) {
+        const temp = [];
+        const json = JSON.parse(savedItems);
+        const savedArtworks = Object.keys(json);
+        if (shoppingCart.length < savedArtworks.length) {
+            for (const item of fixedArts) {
+                if (json[item.id as number]) temp.push(item);
             }
-        } else {
-            cartByUser(parseInt(userId))
-                .then((item) => setShoppingCart(item))
-                .catch((e) => console.error(e));
+            setShoppingCart([...shoppingCart, ...temp]);
         }
+        // } else {
+        //     cartByUser(parseInt(userId))
+        //         .then((item) => setShoppingCart(item))
+        //         .catch((e) => console.error(e));
+        // }
 
         if (shoppingCart.length === 0) return;
-        solanaToUsd().then((data) =>
-            setConvertedPrice(calculatePrice(data, totalPrice() || 0.0) + 2.0),
-        );
+        // solanaToUsd().then((data) =>
+        //     setConvertedPrice(calculatePrice(data, totalPrice() || 0.0) + 2.0),
+        // );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

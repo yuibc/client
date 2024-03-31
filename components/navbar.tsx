@@ -39,15 +39,12 @@ export const Navbar = () => {
     const isAuth = useAtomValue(isAuthAtom);
     const shoppingCart = useAtomValue(shoppingCartAtom);
 
-    const fetchUserInfo = async () => {
+    useEffect(() => {
         const id = localStorage.getItem('User');
         if (!id) return;
-        const user = await findById(id);
-        setUserInfo(user as TInsensitiveUser);
-    };
-
-    useEffect(() => {
-        fetchUserInfo();
+        findById(id)
+            .then((user) => setUserInfo(user as TInsensitiveUser))
+            .catch((e) => console.error(e));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
 
