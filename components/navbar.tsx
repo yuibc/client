@@ -47,7 +47,6 @@ export const Navbar = () => {
     };
 
     useEffect(() => {
-        // setIsAuth(localStorage.getItem('Access-Token') !== null);
         fetchUserInfo();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
