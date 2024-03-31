@@ -55,14 +55,21 @@ export function useMetaplexUmi() {
         umi: Umi,
         mint: KeypairSigner,
         { name, uri, walletAddress }: TMintData,
-    ) =>
-        await createNft(umi, {
+    ) => {
+        const target = createNft(umi, {
             mint,
             name,
             uri,
             sellerFeeBasisPoints,
             tokenOwner: publicKey(walletAddress),
-        }).sendAndConfirm(umi);
+        });
+
+        await target.sendAndConfirm(umi);
+
+        return {
+            instructions: target.getInstructions(),
+        };
+    };
 
     return {
         mint,
