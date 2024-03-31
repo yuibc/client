@@ -16,9 +16,16 @@ import {
 } from '@nextui-org/react';
 import { PostModalProps, TCategory } from '@/types';
 import { Dropzone } from './dropzone';
-import { useArtwork, useMetaplexUmi, useNFTStorage } from '@/services';
+import {
+    isUploadedAtom,
+    useArtwork,
+    useMetaplexUmi,
+    useNFTStorage,
+    useToast,
+} from '@/services';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useCategory, useUmi } from '@/services';
+import { useSetAtom } from 'jotai';
 
 export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const title = useRef<HTMLInputElement | null>(null);
@@ -35,6 +42,8 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const { add } = useArtwork();
     const { categories: retrieveCategories } = useCategory();
     const umi = useUmi();
+    const { onSuccess, onError } = useToast();
+    const setIsUploaded = useSetAtom(isUploadedAtom);
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -59,11 +68,14 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 artwork: fileUploaded as File,
             });
 
-            const { instructions } = await nft(umi, signer, {
+            const target = nft(umi, signer, {
                 name: title.current.value,
                 uri: data.image.toString(),
                 walletAddress,
             });
+
+            const instructions = target.getInstructions();
+            await target.sendAndConfirm(umi);
 
             await add({
                 title: title.current.value,
@@ -76,12 +88,17 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 metadata,
                 published,
                 instructions,
+                mint: signer.publicKey,
             });
             if (onClose) onClose();
+            onSuccess('Uploaded new creation!');
+            setIsUploaded(true);
         } catch (e) {
             console.error(e);
+            onError('Something went wrong!');
         } finally {
             setIsLoading(false);
+            setIsUploaded(false);
         }
     };
 
