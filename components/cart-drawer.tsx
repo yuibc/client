@@ -16,6 +16,11 @@ import {
 } from '@/services';
 import { toIPFSGateway } from '@/helpers';
 import { useAtom, useSetAtom } from 'jotai';
+import {
+    Instruction,
+    percentAmount,
+    publicKey,
+} from '@metaplex-foundation/umi';
 
 export const CartDrawer = ({
     title,
@@ -29,13 +34,32 @@ export const CartDrawer = ({
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const setAddedItems = useSetAtom(addedItemsAtom);
     const [convertedPrice, setConvertedPrice] = useState('');
-    const { signedTransaction, sendTransaction, confirmTransaction } =
-        useTransaction(useUmi());
+    const {
+        signedTransaction,
+        sendTransaction,
+        confirmTransaction,
+        tx,
+        sendAndConfirm: sendAndConfirmTx,
+        serializeTransaction,
+        transferSolTo,
+    } = useTransaction(useUmi());
 
     const clear = () => {
         setShoppingCart([]);
         setAddedItems({});
+        setGroupSelected([]);
         localStorage.setItem('Saved-Items', '{}');
+    };
+
+    const getPrice = () => {
+        let total = 0;
+        if (groupSelected.length === 0) return 0;
+        for (const item of groupSelected) {
+            const target: { title: string; cryptoPrice: number } =
+                JSON.parse(item);
+            total += target.cryptoPrice;
+        }
+        return total;
     };
 
     const totalPrice = () =>
@@ -46,11 +70,11 @@ export const CartDrawer = ({
             0,
         );
 
-    const sendAndConfirm = async () => {
-        const signed = await signedTransaction();
-        const signature = await sendTransaction(signed);
-        const result = await confirmTransaction(signature);
-        console.log(result);
+    const completePayment = async () => {
+        await transferSolTo(
+            getPrice(),
+            publicKey('E29LCxP6QszBwYst82QNwscKS7o6NLecLNPGd2qtFFe'),
+        );
     };
 
     useEffect(() => {
@@ -132,6 +156,7 @@ export const CartDrawer = ({
                                     <RadioGroup
                                         label="Payment Methods"
                                         className="px-5 mt-2"
+                                        defaultValue="Crypto"
                                         orientation="horizontal">
                                         <RadioV2
                                             value="Crypto"
@@ -139,22 +164,24 @@ export const CartDrawer = ({
                                             description="Pay with SOLANA">
                                             Crypto
                                         </RadioV2>
-                                        <RadioV2
-                                            value="Visa/Debit"
-                                            className="w-full"
-                                            description="Pay with your desire card">
-                                            Visa/Debit
-                                        </RadioV2>
+                                        {/* <RadioV2 */}
+                                        {/*     value="Visa/Debit" */}
+                                        {/*     className="w-full" */}
+                                        {/*     description="Pay with your desire card"> */}
+                                        {/*     Visa/Debit */}
+                                        {/* </RadioV2> */}
                                     </RadioGroup>
                                     <span className="p-5 grid grid-cols-6">
                                         <div className="col-span-4 font-semibold">
-                                            <h3>Transaction Fee</h3>
+                                            <h3 className="line-through">
+                                                Transaction Fee
+                                            </h3>
                                             <h3>Total Price</h3>
                                         </div>
                                         <div className="col-span-2 italic">
-                                            <h3>$2</h3>
+                                            <h3 className="line-through">$2</h3>
                                             <h3>
-                                                {totalPrice()} SOL{' '}
+                                                {getPrice()} SOL{' '}
                                                 {totalPrice() > 0 && (
                                                     <span className="italic text-default">
                                                         $ {convertedPrice}
@@ -166,7 +193,7 @@ export const CartDrawer = ({
                                     <div className="flex justify-center items-center">
                                         <Button
                                             variant="flat"
-                                            onPress={sendAndConfirm}
+                                            onPress={completePayment}
                                             startContent={<WalletLoginIcon />}>
                                             Complete Purchase
                                         </Button>
