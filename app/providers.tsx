@@ -12,6 +12,7 @@ import {
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import { UmiProvider } from './umi-provider';
+import { Toaster } from 'react-hot-toast';
 
 export interface ProvidersProps {
     children: React.ReactNode;
@@ -36,6 +37,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
                                 process.env.NEXT_PUBLIC_RPC_ENDPOINT as string
                             }>
                             {children}
+                            <Toaster />
                         </UmiProvider>
                     </WalletProvider>
                 </ConnectionProvider>
