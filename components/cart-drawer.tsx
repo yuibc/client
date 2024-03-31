@@ -15,10 +15,12 @@ import {
     useUmi,
     useToast,
     useUser,
+    useMetaplexUmi,
 } from '@/services';
 import { useAtom, useSetAtom } from 'jotai';
-import { publicKey } from '@metaplex-foundation/umi';
+import { createNoopSigner, publicKey } from '@metaplex-foundation/umi';
 import { fixedArts } from '@/config/fixed-data';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const CartDrawer = ({
     title,
@@ -31,15 +33,19 @@ export const CartDrawer = ({
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const setAddedItems = useSetAtom(addedItemsAtom);
     const [convertedPrice, setConvertedPrice] = useState('');
-    const { transferSolTo } = useTransaction(useUmi());
+    const umi = useUmi();
+    const { transferSolTo } = useTransaction(umi);
     const { onSuccess, onError } = useToast();
-    const { findWalletAddressByDisplayName } = useUser();
     const [isLoading, setIsLoading] = useState(false);
+    const { transferOwnership } = useMetaplexUmi();
+    const wallet = useWallet();
 
     type TSelectedItems = {
         title: string;
         cryptoPrice: number;
-        author: string;
+        creator: string;
+        mint: string;
+        walletAddress: string;
     };
 
     const clear = () => {
@@ -70,20 +76,24 @@ export const CartDrawer = ({
     const completePayment = async () => {
         try {
             setIsLoading(true);
-            const selected = new Map<string, number>();
+            const walletAddress = localStorage.getItem('walletAddress');
+            if (!walletAddress) return;
+
+            type TMintContent = { mint: string; amount: number };
+            const selected = new Map<string, TMintContent[]>();
             for (const item of groupSelected) {
                 const target: TSelectedItems = JSON.parse(item);
-                const { walletAddress } = await findWalletAddressByDisplayName(
-                    target.author,
-                );
-                if (selected.has(walletAddress)) {
-                    const current = selected.get(walletAddress);
-                    selected.set(
-                        walletAddress,
-                        (current as number) + target.cryptoPrice,
-                    );
+                const key = target.walletAddress;
+                const next = {
+                    mint: target.mint,
+                    amount: target.cryptoPrice,
+                };
+                if (selected.has(key)) {
+                    const current = selected.get(key);
+                    current?.push(next);
+                    selected.set(key, current as TMintContent[]);
                 } else {
-                    selected.set(walletAddress, target.cryptoPrice);
+                    selected.set(key, [next]);
                 }
             }
 
@@ -95,14 +105,22 @@ export const CartDrawer = ({
                 return;
             }
 
-            for (const [pubkey, total] of selected) {
-                await transferSolTo(total, publicKey(pubkey));
+            for (const [tokenOwner, target] of selected) {
+                for (const item of target) {
+                    // await transferOwnership(umi, {
+                    //     mint: publicKey(item.mint),
+                    //     tokenOwner: createNoopSigner(publicKey(tokenOwner)),
+                    //     destinationOwner: umi.identity.publicKey,
+                    // }).sendAndConfirm(umi);
+                    await transferSolTo(item.amount, publicKey(tokenOwner));
+                }
             }
 
-            onSuccess('Completed Payment');
+            onSuccess(' Completed!');
             clear();
         } catch (e) {
-            onError('Cancelled Payment');
+            console.error(e);
+            onError('Cancelled Payment! Something went wrong!');
         } finally {
             setIsLoading(false);
         }
@@ -186,7 +204,11 @@ export const CartDrawer = ({
                                                         item.cryptoPrice
                                                     }
                                                     url={item.url}
-                                                    author={item.creator}
+                                                    creator={item.creator}
+                                                    walletAddress={
+                                                        item.walletAddress
+                                                    }
+                                                    mint={item.mint}
                                                 />
                                             ))}
                                         </CheckboxGroup>
