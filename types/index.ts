@@ -1,4 +1,4 @@
-import { Instruction } from '@metaplex-foundation/umi';
+import { Instruction, PublicKey } from '@metaplex-foundation/umi';
 import { ReactNode, SVGProps } from 'react';
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -15,6 +15,8 @@ export type ArtBlockProps = {
     isDashboardItem: boolean;
     disabled: boolean;
     creator: string;
+    mint: PublicKey;
+    walletAddress: string;
 };
 
 export type TArtBlock = ArtBlockProps;
@@ -35,6 +37,7 @@ export type SectionProps = {
     gridSize: 3 | 4 | 5;
     onClick: () => void;
     limited: boolean;
+    noHeader: boolean;
 };
 
 export type FooterSubscriptionProps = {
@@ -71,7 +74,7 @@ export type LoginPopupProps = {
 
 export type CartItemProps = {
     title: string;
-    author: string;
+    creator: string;
     cryptoPrice: number;
     currency: string;
     cryptoCurrency: string;
@@ -81,6 +84,8 @@ export type CartItemV2Props = CartItemProps & {
     value: string;
     url: string;
     metadata: string;
+    mint: string;
+    walletAddress: string;
 };
 
 export type UserDropdownProps = {
