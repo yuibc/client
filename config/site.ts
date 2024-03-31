@@ -5,10 +5,6 @@ export const siteConfig = {
     description: 'An NFT-Based Marketplace',
     navItems: [
         {
-            label: 'Featured',
-            href: '/featured',
-        },
-        {
             label: 'Creators',
             href: '/creators',
         },
