@@ -1,4 +1,4 @@
-import { CartDrawerProps, TArtwork } from '@/types';
+import { CartDrawerProps } from '@/types';
 import { Button } from '@nextui-org/button';
 import { SolarTrashBinTrashBoldIcon, WalletLoginIcon } from './icons';
 import { CheckboxGroup, Divider, RadioGroup } from '@nextui-org/react';
@@ -13,36 +13,24 @@ import {
     useCryptoConversion,
     useTransaction,
     useUmi,
+    useToast,
 } from '@/services';
-import { toIPFSGateway } from '@/helpers';
 import { useAtom, useSetAtom } from 'jotai';
-import {
-    Instruction,
-    percentAmount,
-    publicKey,
-} from '@metaplex-foundation/umi';
+import { publicKey } from '@metaplex-foundation/umi';
+import { fixedArts } from '@/config/fixed-data';
 
 export const CartDrawer = ({
     title,
     isOpen,
     onClose,
 }: Partial<CartDrawerProps>) => {
-    const [items, setItems] = useState<TArtwork[]>([]);
     const [groupSelected, setGroupSelected] = useState<string[]>([]);
     const { cartByUser } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const setAddedItems = useSetAtom(addedItemsAtom);
     const [convertedPrice, setConvertedPrice] = useState('');
-    const {
-        signedTransaction,
-        sendTransaction,
-        confirmTransaction,
-        tx,
-        sendAndConfirm: sendAndConfirmTx,
-        serializeTransaction,
-        transferSolTo,
-    } = useTransaction(useUmi());
+    const { transferSolTo } = useTransaction(useUmi());
 
     const clear = () => {
         setShoppingCart([]);
@@ -71,20 +59,33 @@ export const CartDrawer = ({
         );
 
     const completePayment = async () => {
-        await transferSolTo(
-            getPrice(),
-            publicKey('E29LCxP6QszBwYst82QNwscKS7o6NLecLNPGd2qtFFe'),
-        );
+        try {
+            await transferSolTo(
+                getPrice(),
+                publicKey('E29LCxP6QszBwYst82QNwscKS7o6NLecLNPGd2qtFFe'),
+            );
+            useToast().onSuccess('Completed Payment');
+        } catch (e) {
+            useToast().onError('Cancelled Payment');
+        }
     };
 
     useEffect(() => {
         const userId = localStorage.getItem('User');
         const savedItems = localStorage.getItem('Saved-Items') || '';
         if (!userId) {
+            const temp = [];
             const json = JSON.parse(savedItems);
+            const savedArtworks = Object.keys(json);
+            if (shoppingCart.length < savedArtworks.length) {
+                for (const item of fixedArts) {
+                    if (json[item.id as number]) temp.push(item);
+                }
+                setShoppingCart([...shoppingCart, ...temp]);
+            }
         } else {
             cartByUser(parseInt(userId))
-                .then((item) => setItems(item))
+                .then((item) => setShoppingCart(item))
                 .catch((e) => console.error(e));
         }
 
