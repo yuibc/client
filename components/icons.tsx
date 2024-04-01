@@ -2,23 +2,36 @@ import * as React from 'react';
 import { IconSvgProps } from '@/types';
 
 export const Logo: React.FC<IconSvgProps> = ({
-    size = 36,
+    size = 48,
     width,
     height,
     ...props
 }) => (
     <svg
-        fill="none"
-        height={size || height}
-        viewBox="0 0 32 32"
         width={size || width}
-        {...props}>
-        <path
-            clipRule="evenodd"
-            d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-            fill="currentColor"
-            fillRule="evenodd"
-        />
+        height={size || height}
+        viewBox="0 0 128 128"
+        fill="none"
+        {...props}
+        xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70.2144" cy="36.6588" r="17.6588" fill="#1976D2" />
+        <circle cx="88.5798" cy="86.1032" r="21.8969" fill="#1976D2" />
+        <circle cx="46.1984" cy="71.9764" r="10.5953" fill="#1976D2" />
+        <circle cx="26.4208" cy="97.405" r="6.35716" fill="#1976D2" />
+        <circle cx="31.3652" cy="47.2541" r="2.8254" fill="#1976D2" />
+        <circle cx="15.8254" cy="69.8571" r="2.8254" fill="#1976D2" />
+        <circle cx="73.0398" cy="36.6588" r="17.6588" fill="#A889FF" />
+        <circle cx="91.4051" cy="86.1032" r="21.8969" fill="#A889FF" />
+        <circle cx="49.0237" cy="71.9764" r="10.5953" fill="#A889FF" />
+        <circle cx="29.2461" cy="97.405" r="6.35716" fill="#A889FF" />
+        <circle cx="34.1905" cy="47.2541" r="2.8254" fill="#A889FF" />
+        <circle cx="18.6507" cy="69.8571" r="2.8254" fill="#A889FF" />
+        <circle cx="75.1588" cy="36.6588" r="17.6588" fill="#898EFF" />
+        <circle cx="93.5241" cy="86.1032" r="21.8969" fill="#898EFF" />
+        <circle cx="51.1428" cy="71.9764" r="10.5953" fill="#898EFF" />
+        <circle cx="31.3651" cy="97.405" r="6.35716" fill="#898EFF" />
+        <circle cx="36.3095" cy="47.2541" r="2.8254" fill="#898EFF" />
+        <circle cx="20.7697" cy="69.8571" r="2.8254" fill="#898EFF" />
     </svg>
 );
 

@@ -72,7 +72,6 @@ export const Navbar = () => {
                         className="flex justify-start items-center gap-1"
                         href="/">
                         <Logo />
-                        <p className="font-bold text-inherit">YUI</p>
                     </NextLink>
                 </NavbarBrand>
                 <ul className="hidden lg:flex gap-5 justify-start ml-2">

@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-    name: 'YUI',
+    name: 'YUI - NFT-Based Marketplace',
     description: 'An NFT-Based Marketplace',
     navItems: [
         {
