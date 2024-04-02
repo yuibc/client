@@ -65,11 +65,12 @@ export default function ArtworkManagement() {
                                     cryptoCurrency={artwork.currency}
                                     currency="$"
                                     creator={artwork.creator}
+                                    published={artwork.published}
                                 />
                             ))}
                             <label
                                 htmlFor="open-post-modal"
-                                className="flex flex-col items-center justify-center w-full border-2 border-primary-300 border-dashed rounded-lg cursor-pointer bg-default-900 dark:hover:bg-default-200 dark:bg-default-100 hover:bg-default-800 dark:border-default-100 dark:hover:border-default-200">
+                                className="flex flex-col items-center justify-center w-full border-2 border-purple-300 border-dashed rounded-lg cursor-pointer bg-neutral-100 dark:hover:bg-neutral-800 dark:bg-neutral-900 hover:bg-neutral-200 dark:border-purple-500 dark:hover:border-purple-600">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <IconParkSolidAddPic size={72} />
                                     <p className="text-default-300 mt-2 font-semibold font-mono text-sm">
