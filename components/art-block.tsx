@@ -20,7 +20,10 @@ import {
     shoppingCartAtom,
     useArtwork,
     useCryptoConversion,
+    useMetaplexUmi,
+    useNFTStorage,
     useToast,
+    useUmi,
 } from '@/services';
 import { useAtom } from 'jotai';
 
@@ -36,6 +39,7 @@ export const ArtBlock = ({
     mint,
     walletAddress,
     published,
+    cid,
     onClick,
 }: Partial<ArtBlockProps & TArtBlockExtra>) => {
     const { add } = useCart();
@@ -43,8 +47,11 @@ export const ArtBlock = ({
     const [convertedPrice, setConvertedPrice] = useState('');
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const [addedItems, setAddedItems] = useAtom(addedItemsAtom);
-    const { updatePrice, publish } = useArtwork();
+    const { publish, deleteArtwork } = useArtwork();
     const { onSuccess, onError } = useToast();
+    const umi = useUmi();
+    const { burnNft } = useMetaplexUmi();
+    const { deleteUploaded } = useNFTStorage();
 
     const addToCart = async () => {
         // const userId = localStorage.getItem('User');
@@ -87,6 +94,18 @@ export const ArtBlock = ({
             else onSuccess('Published');
         } catch (e) {
             onError('Cannot publish/unpublish this artwork!');
+        }
+    };
+
+    const burnArtwork = async () => {
+        try {
+            if (!id || !mint || !cid) return;
+            await burnNft(umi, mint);
+            await deleteArtwork(id);
+            await deleteUploaded(cid);
+            onSuccess('Burned');
+        } catch (e) {
+            onError("Cannot burn this artwork. There's something worng!");
         }
     };
 
@@ -137,6 +156,13 @@ export const ArtBlock = ({
                                     key="publish/unpublish"
                                     onClick={publishArtwork}>
                                     {published ? 'Unpublish' : 'Publish'}
+                                </DropdownItem>
+                                <DropdownItem
+                                    key="burn-nft-artwork"
+                                    variant="flat"
+                                    color="danger"
+                                    onClick={burnArtwork}>
+                                    Burn
                                 </DropdownItem>
                                 {/* <DropdownItem */}
                                 {/*     key="edit-price" */}
