@@ -21,6 +21,11 @@ export type ArtBlockProps = {
 
 export type TArtBlock = ArtBlockProps;
 
+export type TArtBlockExtra = TArtBlock & {
+    published: boolean;
+    onClick: () => void;
+};
+
 export type TArtwork = Omit<Omit<TArtBlock, 'isDashboardItem'>, 'disabled'> & {
     description: string;
     categories: string;

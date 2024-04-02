@@ -12,13 +12,15 @@ import {
     DropdownMenu,
     DropdownItem,
 } from '@nextui-org/react';
-import { ArtBlockProps } from '@/types';
+import { ArtBlockProps, TArtBlockExtra } from '@/types';
 import { CartIcon, PhGearSixFillIcon } from './icons';
 import { useCart } from '@/services/cart';
 import {
     addedItemsAtom,
     shoppingCartAtom,
+    useArtwork,
     useCryptoConversion,
+    useToast,
 } from '@/services';
 import { useAtom } from 'jotai';
 
@@ -33,12 +35,16 @@ export const ArtBlock = ({
     creator,
     mint,
     walletAddress,
-}: Partial<ArtBlockProps>) => {
+    published,
+    onClick,
+}: Partial<ArtBlockProps & TArtBlockExtra>) => {
     const { add } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
     const [convertedPrice, setConvertedPrice] = useState('');
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const [addedItems, setAddedItems] = useAtom(addedItemsAtom);
+    const { updatePrice, publish } = useArtwork();
+    const { onSuccess, onError } = useToast();
 
     const addToCart = async () => {
         // const userId = localStorage.getItem('User');
@@ -71,6 +77,17 @@ export const ArtBlock = ({
         return;
         // }
         // await add({ user: parseInt(userId as string), artwork: id });
+    };
+
+    const publishArtwork = async () => {
+        try {
+            if (!id || !cryptoPrice) return;
+            await publish(id);
+            if (published) onSuccess('Unpublished');
+            else onSuccess('Published');
+        } catch (e) {
+            onError('Cannot publish/unpublish this artwork!');
+        }
     };
 
     useEffect(() => {
@@ -116,12 +133,16 @@ export const ArtBlock = ({
                                 />
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Artblock Actions">
-                                <DropdownItem key="publish/unpublish">
-                                    Publish
+                                <DropdownItem
+                                    key="publish/unpublish"
+                                    onClick={publishArtwork}>
+                                    {published ? 'Unpublish' : 'Publish'}
                                 </DropdownItem>
-                                <DropdownItem key="edit" startContent="">
-                                    Edit
-                                </DropdownItem>
+                                {/* <DropdownItem */}
+                                {/*     key="edit-price" */}
+                                {/*     onClick={onClick}> */}
+                                {/*     Edit price */}
+                                {/* </DropdownItem> */}
                             </DropdownMenu>
                         </Dropdown>
                     ) : (

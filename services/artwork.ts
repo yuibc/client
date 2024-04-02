@@ -68,10 +68,33 @@ export function useArtwork(baseUrl = BASE_URL) {
         return await res.json();
     };
 
+    const publish = async (id: number) => {
+        const res = await fetch(`${baseUrl}/artwork/${id}/published`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.text();
+    };
+
+    const updatePrice = async (id: number, price: number) => {
+        const res = await fetch(`${baseUrl}/artwork/${id}/price`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({ price }),
+        });
+        return await res.text();
+    };
+
     return {
         artworks,
         add,
         upload,
         allArtworks,
+        publish,
+        updatePrice,
     };
 }

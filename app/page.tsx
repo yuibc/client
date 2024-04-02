@@ -51,6 +51,7 @@ export default function Home() {
                         walletAddress={item.walletAddress}
                         mint={item.mint}
                         isDashboardItem={isCreator(item.walletAddress)}
+                        published={item.published}
                     />
                 ))}
                 {presentArtworks.length === 0 &&
