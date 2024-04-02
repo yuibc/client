@@ -61,7 +61,11 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
 
             const signer = mint(umi);
 
-            const { url: metadata, data } = await uploadArtwork({
+            const {
+                url: metadata,
+                data,
+                ipnft,
+            } = await uploadArtwork({
                 title: title.current.value,
                 description: description.current.value,
                 owner: walletAddress,
@@ -89,6 +93,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 published,
                 instructions,
                 mint: signer.publicKey,
+                cid: ipnft,
             });
             if (onClose) onClose();
             onSuccess('Uploaded new creation!');
