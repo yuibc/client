@@ -1,4 +1,4 @@
-import { TInsensitiveUser, UserDropdownProps } from '@/types';
+import { UserDropdownProps } from '@/types';
 import {
     Button,
     Dropdown,
@@ -8,6 +8,8 @@ import {
     Link,
 } from '@nextui-org/react';
 import {
+    FluentPlugConnected24Filled,
+    GgArrowsExchangeV,
     IcRoundDashboardIcon,
     IconamoonProfileCircleFill,
     LetsIconsSignOutSqureFill,
@@ -16,6 +18,8 @@ import {
 import { CreatorBlock } from './creator-block';
 import { useFollow } from '@/services';
 import { useEffect, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PhantomWalletName } from '@solana/wallet-adapter-wallets';
 
 export const UserDropdown = ({
     displayName,
@@ -23,6 +27,8 @@ export const UserDropdown = ({
 }: Partial<UserDropdownProps>) => {
     const { followers } = useFollow();
     const [followerCount, setFollowerCount] = useState(0);
+    const wallet = useWallet();
+
     const signOut = () => {
         localStorage.clear();
         location.href = '/';
@@ -30,16 +36,29 @@ export const UserDropdown = ({
     };
 
     const fetchFollowerCount = async () => {
-        const userId = parseInt(localStorage.getItem('User') as string);
-        const fws = (await followers(userId)) as TInsensitiveUser[];
+        const userId = localStorage.getItem('User');
+        if (!userId) return;
+        const fws = await followers(parseInt(userId));
+        if (!fws) return;
         setFollowerCount(fws.length);
+    };
+
+    const reconnectWallet = async () => {
+        const walletName = localStorage.getItem('walletName');
+        if (!walletName) return;
+        // Default
+        if (walletName === PhantomWalletName) {
+            wallet.select(PhantomWalletName);
+            await wallet.connect();
+        }
     };
 
     useEffect(() => {
         fetchFollowerCount();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <Dropdown>
+        <Dropdown backdrop="opaque">
             <DropdownTrigger>
                 <Button
                     size="md"
@@ -50,7 +69,12 @@ export const UserDropdown = ({
                     {displayName}
                 </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Dynamic Actions">
+            <DropdownMenu
+                aria-label="Dynamic Actions"
+                disabledKeys={[
+                    wallet.connected ? 'reconnect' : '',
+                    'change-wallet',
+                ]}>
                 <DropdownItem>
                     <CreatorBlock
                         displayName={displayName}
@@ -64,6 +88,20 @@ export const UserDropdown = ({
                     className="py-3"
                     startContent={<IconamoonProfileCircleFill />}>
                     Profile
+                </DropdownItem>
+                <DropdownItem
+                    key="reconnect"
+                    className="py-3"
+                    onPress={reconnectWallet}
+                    startContent={<FluentPlugConnected24Filled />}>
+                    Reconnect
+                </DropdownItem>
+                <DropdownItem
+                    key="change-wallet"
+                    className="py-3"
+                    onPress={reconnectWallet}
+                    startContent={<GgArrowsExchangeV />}>
+                    Change Wallet
                 </DropdownItem>
                 <DropdownItem
                     key="dashboard"

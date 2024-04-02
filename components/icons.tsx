@@ -2,23 +2,36 @@ import * as React from 'react';
 import { IconSvgProps } from '@/types';
 
 export const Logo: React.FC<IconSvgProps> = ({
-    size = 36,
+    size = 48,
     width,
     height,
     ...props
 }) => (
     <svg
-        fill="none"
-        height={size || height}
-        viewBox="0 0 32 32"
         width={size || width}
-        {...props}>
-        <path
-            clipRule="evenodd"
-            d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-            fill="currentColor"
-            fillRule="evenodd"
-        />
+        height={size || height}
+        viewBox="0 0 128 128"
+        fill="none"
+        {...props}
+        xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70.2144" cy="36.6588" r="17.6588" fill="#1976D2" />
+        <circle cx="88.5798" cy="86.1032" r="21.8969" fill="#1976D2" />
+        <circle cx="46.1984" cy="71.9764" r="10.5953" fill="#1976D2" />
+        <circle cx="26.4208" cy="97.405" r="6.35716" fill="#1976D2" />
+        <circle cx="31.3652" cy="47.2541" r="2.8254" fill="#1976D2" />
+        <circle cx="15.8254" cy="69.8571" r="2.8254" fill="#1976D2" />
+        <circle cx="73.0398" cy="36.6588" r="17.6588" fill="#A889FF" />
+        <circle cx="91.4051" cy="86.1032" r="21.8969" fill="#A889FF" />
+        <circle cx="49.0237" cy="71.9764" r="10.5953" fill="#A889FF" />
+        <circle cx="29.2461" cy="97.405" r="6.35716" fill="#A889FF" />
+        <circle cx="34.1905" cy="47.2541" r="2.8254" fill="#A889FF" />
+        <circle cx="18.6507" cy="69.8571" r="2.8254" fill="#A889FF" />
+        <circle cx="75.1588" cy="36.6588" r="17.6588" fill="#898EFF" />
+        <circle cx="93.5241" cy="86.1032" r="21.8969" fill="#898EFF" />
+        <circle cx="51.1428" cy="71.9764" r="10.5953" fill="#898EFF" />
+        <circle cx="31.3651" cy="97.405" r="6.35716" fill="#898EFF" />
+        <circle cx="36.3095" cy="47.2541" r="2.8254" fill="#898EFF" />
+        <circle cx="20.7697" cy="69.8571" r="2.8254" fill="#898EFF" />
     </svg>
 );
 
@@ -632,6 +645,76 @@ export const TablerMoodEmptyFilledIcon: React.FC<IconSvgProps> = ({
             <path
                 fill="#a889ff"
                 d="M17 3.34a10 10 0 1 1-14.995 8.984L2 12l.005-.324A10 10 0 0 1 17 3.34M15 14H9l-.117.007a1 1 0 0 0 0 1.986L9 16h6l.117-.007a1 1 0 0 0 0-1.986zM9.01 9l-.127.007a1 1 0 0 0 0 1.986L9 11l.127-.007a1 1 0 0 0 0-1.986zm6 0l-.127.007a1 1 0 0 0 0 1.986L15 11l.127-.007a1 1 0 0 0 0-1.986z"></path>
+        </svg>
+    );
+};
+
+export const IconParkSolidAddPic: React.FC<IconSvgProps> = ({
+    size = 36,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 48 48"
+            {...props}>
+            <g
+                fill="none"
+                stroke="#a889ff"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeMiterlimit={10}
+                strokeWidth={4}>
+                <path d="M38 21v19a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2h18.364"></path>
+                <path
+                    fill="#a889ff"
+                    d="M12 31.03L18 23l3 3l3.5-5.5L32 31.03z"></path>
+                <path d="M34 10h8m-4.005-4.205v8"></path>
+            </g>
+        </svg>
+    );
+};
+
+export const FluentPlugConnected24Filled: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                d="M19.49 5.57a5.999 5.999 0 0 1-1.893 8.962c-.649.351-1.43.135-1.952-.386l-5.79-5.791c-.522-.522-.738-1.303-.388-1.952A5.999 5.999 0 0 1 18.43 4.51l2.29-2.29a.75.75 0 1 1 1.061 1.06zM3.28 21.78l2.29-2.29a5.999 5.999 0 0 0 8.962-1.893c.351-.649.135-1.43-.387-1.952l-5.79-5.79c-.522-.522-1.303-.738-1.952-.388A5.999 5.999 0 0 0 4.51 18.43l-2.29 2.29a.75.75 0 1 0 1.06 1.061"></path>
+        </svg>
+    );
+};
+
+export const GgArrowsExchangeV: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size || width}
+            height={size || height}
+            viewBox="0 0 24 24"
+            {...props}>
+            <path
+                fill="#a889ff"
+                d="M12.984 15a1 1 0 0 0 1.848.53l2.688-2.687a1 1 0 0 0-1.415-1.414l-1.12 1.12V5a1 1 0 0 0-2 0v9.978zm-1.968-6a1 1 0 0 0-1.848-.53l-2.687 2.687a1 1 0 1 0 1.414 1.414l1.121-1.12V19a1 1 0 1 0 2 0V9.022z"></path>
         </svg>
     );
 };
