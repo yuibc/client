@@ -8,6 +8,7 @@ import {
     Signer,
 } from '@metaplex-foundation/umi';
 import { createTransferCheckedInstruction } from '@solana/spl-token';
+import { useWallet } from '@solana/wallet-adapter-react';
 import {
     Connection,
     LAMPORTS_PER_SOL,
@@ -77,6 +78,8 @@ export function useTransaction(umi: Umi) {
         const mintPublicKey = new PKey(mint);
         const amountLamports = amount * LAMPORTS_PER_SOL;
 
+        const signer = Keypair.generate();
+
         const tx = new Tx()
             .add(
                 SystemProgram.transfer({
@@ -96,7 +99,7 @@ export function useTransaction(umi: Umi) {
                 ),
             );
 
-        await sendAndConfirmTransaction(connection, tx, []);
+        return { tx, connection, signer };
     };
 
     return {
