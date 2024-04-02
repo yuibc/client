@@ -1,4 +1,4 @@
-import { TInsensitiveUser, UserDropdownProps } from '@/types';
+import { UserDropdownProps } from '@/types';
 import {
     Button,
     Dropdown,
@@ -20,7 +20,6 @@ import { useFollow } from '@/services';
 import { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PhantomWalletName } from '@solana/wallet-adapter-wallets';
-import { Wallet } from './wallet';
 
 export const UserDropdown = ({
     displayName,
@@ -37,8 +36,10 @@ export const UserDropdown = ({
     };
 
     const fetchFollowerCount = async () => {
-        const userId = parseInt(localStorage.getItem('User') as string);
-        const fws = (await followers(userId)) as TInsensitiveUser[];
+        const userId = localStorage.getItem('User');
+        if (!userId) return;
+        const fws = await followers(parseInt(userId));
+        if (!fws) return;
         setFollowerCount(fws.length);
     };
 
