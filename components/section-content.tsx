@@ -11,19 +11,22 @@ export const SectionContent = ({
     gridSize,
     onClick,
     limited,
+    noHeader,
 }: Partial<SectionProps>) => {
     return (
         <div className="flex flex-col gap-3 w-full mb-5">
             <div className="flex justify-between items-center gap-3">
-                <span className="flex items-center gap-3">
-                    <Button
-                        isIconOnly
-                        color="default"
-                        startContent={icon}
-                        variant="faded"
-                    />
-                    <h2 className="text-2xl font-semibold">{header}</h2>
-                </span>
+                {!noHeader && (
+                    <span className="flex items-center gap-3">
+                        <Button
+                            isIconOnly
+                            color="default"
+                            startContent={icon}
+                            variant="faded"
+                        />
+                        <h2 className="text-2xl font-semibold">{header}</h2>
+                    </span>
+                )}
                 {hasFilter && (
                     <Button
                         color="default"

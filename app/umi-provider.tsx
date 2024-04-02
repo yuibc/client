@@ -4,6 +4,7 @@ import { mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { ReactNode } from 'react';
 import { UmiContext } from '@/services';
+import { mplToolbox } from '@metaplex-foundation/mpl-toolbox';
 
 export const UmiProvider = ({
     endpoint,
@@ -15,7 +16,8 @@ export const UmiProvider = ({
     const wallet = useWallet();
     const umi = createUmi(endpoint)
         .use(walletAdapterIdentity(wallet))
-        .use(mplTokenMetadata());
+        .use(mplTokenMetadata())
+        .use(mplToolbox());
 
     return (
         <UmiContext.Provider value={{ umi }}>{children}</UmiContext.Provider>

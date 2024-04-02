@@ -8,7 +8,7 @@ export const fixedArts: Partial<TArtwork>[] = [
         cryptoPrice: 1,
         cryptoCurrency: 'SOL',
         currency: '$',
-        creator: '@creator1@ftp',
+        creator: '@QWkRrlpANT',
     },
     {
         id: 2,
@@ -17,7 +17,7 @@ export const fixedArts: Partial<TArtwork>[] = [
         cryptoPrice: 0.012,
         cryptoCurrency: 'SOL',
         currency: '$',
-        creator: '@Xreator1@ftp',
+        creator: '@QWkRrlpANT',
     },
     {
         id: 3,
@@ -26,7 +26,7 @@ export const fixedArts: Partial<TArtwork>[] = [
         cryptoPrice: 0.0025,
         cryptoCurrency: 'SOL',
         currency: '$',
-        creator: '@Areator1@ftp',
+        creator: '@UHCvbBtAzn',
     },
     {
         id: 4,
@@ -35,7 +35,7 @@ export const fixedArts: Partial<TArtwork>[] = [
         cryptoPrice: 0.001,
         cryptoCurrency: 'SOL',
         currency: '$',
-        creator: '@Oreator1@ftp',
+        creator: '@UHCvbBtAzn',
     },
     {
         id: 5,
@@ -44,7 +44,7 @@ export const fixedArts: Partial<TArtwork>[] = [
         cryptoPrice: 0.01,
         cryptoCurrency: 'SOL',
         currency: '$',
-        creator: '@Freator1@ftp',
+        creator: '@QWkRrlpANT',
     },
 ];
 

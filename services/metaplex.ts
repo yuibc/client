@@ -3,6 +3,7 @@ import {
     createNft,
     createV1,
     mintV1,
+    transferV1,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
     KeypairSigner,
@@ -11,6 +12,7 @@ import {
     generateSigner,
     percentAmount,
     publicKey,
+    Signer,
 } from '@metaplex-foundation/umi';
 
 type TMintData = {
@@ -51,23 +53,42 @@ export function useMetaplexUmi() {
             tokenStandard: TokenStandard.NonFungible,
         }).sendAndConfirm(umi);
 
-    const nft = async (
+    const nft = (
         umi: Umi,
         mint: KeypairSigner,
         { name, uri, walletAddress }: TMintData,
     ) =>
-        await createNft(umi, {
+        createNft(umi, {
             mint,
             name,
             uri,
             sellerFeeBasisPoints,
             tokenOwner: publicKey(walletAddress),
-        }).sendAndConfirm(umi);
+        });
+
+    type TTransfer = {
+        mint: PublicKey;
+        tokenOwner: Signer;
+        destinationOwner: PublicKey;
+    };
+
+    const transferOwnership = (
+        umi: Umi,
+        { mint, tokenOwner, destinationOwner }: TTransfer,
+    ) =>
+        transferV1(umi, {
+            mint,
+            authority: tokenOwner,
+            tokenOwner: tokenOwner.publicKey,
+            destinationOwner,
+            tokenStandard: TokenStandard.NonFungible,
+        });
 
     return {
         mint,
         nft,
         createAccount,
         mintToken,
+        transferOwnership,
     };
 }

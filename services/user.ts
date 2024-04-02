@@ -59,5 +59,25 @@ export function useUser(url = BASE_URL) {
         }
     };
 
-    return { create, users, findById, findByWalletAddress };
+    const findWalletAddressByDisplayName = async (displayName: string) => {
+        try {
+            const res = await fetch(`${url}/${displayName}/user`, {
+                method: 'GET',
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
+            return await res.json();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    return {
+        create,
+        users,
+        findById,
+        findByWalletAddress,
+        findWalletAddressByDisplayName,
+    };
 }

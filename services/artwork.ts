@@ -21,6 +21,8 @@ export function useArtwork(baseUrl = BASE_URL) {
         categories,
         metadata,
         published,
+        instructions,
+        mint,
     }: Partial<TArtwork>) => {
         const walletAddress = localStorage.getItem('User');
         if (!walletAddress) return;
@@ -39,9 +41,21 @@ export function useArtwork(baseUrl = BASE_URL) {
                 categories,
                 metadata,
                 published,
+                instructions,
+                mint,
             }),
         });
         return await res.text();
+    };
+
+    const allArtworks = async (): Promise<TArtwork[]> => {
+        const res = await fetch(`${baseUrl}/artworks`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.json();
     };
 
     const upload = async (
@@ -58,5 +72,6 @@ export function useArtwork(baseUrl = BASE_URL) {
         artworks,
         add,
         upload,
+        allArtworks,
     };
 }

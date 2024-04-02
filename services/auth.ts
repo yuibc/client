@@ -46,5 +46,20 @@ export function useAuth(url = BASE_URL) {
         }
     };
 
-    return { authenticate, authenticateWithWallet };
+    const verifyToken = async (): Promise<boolean | undefined> => {
+        try {
+            const res = await fetch(`${url}/verify/token`, {
+                method: 'GET',
+                headers: {
+                    'content-type': 'application/json',
+                    authorization: `Bearer ${accessToken()}`,
+                },
+            });
+            return await res.json();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    return { accessToken, authenticate, authenticateWithWallet, verifyToken };
 }

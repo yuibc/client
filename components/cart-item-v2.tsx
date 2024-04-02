@@ -4,24 +4,32 @@ import { CartItemV2Props } from '@/types';
 
 export const CartItemV2 = ({
     title,
-    author,
+    creator,
     cryptoPrice,
     currency,
     cryptoCurrency,
     url,
+    walletAddress,
+    mint,
 }: Partial<CartItemV2Props>) => {
     return (
         <Checkbox
             classNames={{
                 base: cn(
-                    'inline-flex max-w-md w-full bg-content1 m-0',
+                    'inline-flex max-w-md w-full bg-content m-0',
                     'hover:bg-content2 items-center justify-start',
                     'cursor-pointer gap-2 p-4 border-2 border-transparent',
                     'data-[selected=true]:border-primary',
                 ),
                 label: 'w-full',
             }}
-            value={title}>
+            value={JSON.stringify({
+                title,
+                cryptoPrice,
+                creator,
+                mint,
+                walletAddress,
+            })}>
             <div className="w-full flex justify-between gap-2">
                 <Image
                     className="col-span-1"
@@ -34,7 +42,7 @@ export const CartItemV2 = ({
                 <span className="flex flex-col">
                     <h3 className="text-lg font-semibold">{title}</h3>
                     <Chip color="primary" size="sm" variant="flat">
-                        {author}
+                        {creator}
                     </Chip>
                 </span>
                 <span className="flex col-span-1 justify-end items-end gap-1">

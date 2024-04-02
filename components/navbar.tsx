@@ -33,22 +33,25 @@ import { useAtomValue } from 'jotai';
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
+    const [userInfo, setUserInfo] = useState<TInsensitiveUser>({
+        displayName: '',
+        email: '',
+        walletAddress: '',
+    });
     const { findById } = useUser();
     const wallet = useWallet();
     const isAuth = useAtomValue(isAuthAtom);
     const shoppingCart = useAtomValue(shoppingCartAtom);
 
-    const fetchUserInfo = async () => {
+    useEffect(() => {
         const id = localStorage.getItem('User');
         if (!id) return;
-        const user = await findById(id);
-        setUserInfo(user as TInsensitiveUser);
-    };
-
-    useEffect(() => {
-        // setIsAuth(localStorage.getItem('Access-Token') !== null);
-        fetchUserInfo();
+        findById(id)
+            .then(
+                (user: TInsensitiveUser | undefined) =>
+                    user && Object.keys(user).length > 0 && setUserInfo(user),
+            )
+            .catch((e) => console.error(e));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
 
@@ -76,7 +79,6 @@ export const Navbar = () => {
                         className="flex justify-start items-center gap-1"
                         href="/">
                         <Logo />
-                        <p className="font-bold text-inherit">YUI</p>
                     </NextLink>
                 </NavbarBrand>
                 <ul className="hidden lg:flex gap-5 justify-start ml-2">
