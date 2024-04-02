@@ -16,7 +16,7 @@ export const CartItemV2 = ({
         <Checkbox
             classNames={{
                 base: cn(
-                    'inline-flex max-w-md w-full bg-content1 m-0',
+                    'inline-flex max-w-md w-full bg-content m-0',
                     'hover:bg-content2 items-center justify-start',
                     'cursor-pointer gap-2 p-4 border-2 border-transparent',
                     'data-[selected=true]:border-primary',
