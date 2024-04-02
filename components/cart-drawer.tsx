@@ -15,12 +15,14 @@ import {
     useUmi,
     useToast,
     useUser,
-    useMetaplexUmi,
+    useShyftProvider,
 } from '@/services';
 import { useAtom, useSetAtom } from 'jotai';
 import { createNoopSigner, publicKey } from '@metaplex-foundation/umi';
 import { fixedArts } from '@/config/fixed-data';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Connection, Transaction, clusterApiUrl } from '@solana/web3.js';
+import { Network, ShyftSdk, signAndSendTransaction } from '@shyft-to/js';
 
 export const CartDrawer = ({
     title,
@@ -37,8 +39,13 @@ export const CartDrawer = ({
     const { transferSolTo } = useTransaction(umi);
     const { onSuccess, onError } = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const { transferOwnership } = useMetaplexUmi();
     const wallet = useWallet();
+    const {
+        transfer,
+        transferMany,
+        completeTransaction,
+        completeTransactions,
+    } = useShyftProvider();
 
     type TSelectedItems = {
         title: string;
@@ -79,21 +86,23 @@ export const CartDrawer = ({
             const walletAddress = localStorage.getItem('walletAddress');
             if (!walletAddress) return;
 
-            type TMintContent = { mint: string; amount: number };
-            const selected = new Map<string, TMintContent[]>();
+            type TMintContent = { mint: string[]; amount: number };
+            const selected = new Map<string, TMintContent>();
             for (const item of groupSelected) {
                 const target: TSelectedItems = JSON.parse(item);
                 const key = target.walletAddress;
-                const next = {
-                    mint: target.mint,
-                    amount: target.cryptoPrice,
-                };
                 if (selected.has(key)) {
                     const current = selected.get(key);
-                    current?.push(next);
-                    selected.set(key, current as TMintContent[]);
+                    if (current) {
+                        current.mint.push(target.mint);
+                        current.amount += target.cryptoPrice;
+                        selected.set(key, current);
+                    }
                 } else {
-                    selected.set(key, [next]);
+                    selected.set(key, {
+                        mint: [target.mint],
+                        amount: target.cryptoPrice,
+                    });
                 }
             }
 
@@ -106,16 +115,32 @@ export const CartDrawer = ({
             }
 
             for (const [tokenOwner, target] of selected) {
-                for (const item of target) {
-                    // await transferOwnership(umi, {
-                    //     mint: publicKey(item.mint),
-                    //     tokenOwner: createNoopSigner(publicKey(tokenOwner)),
-                    //     destinationOwner: umi.identity.publicKey,
-                    // }).sendAndConfirm(umi);
-                    await transferSolTo(item.amount, publicKey(tokenOwner));
-                }
+                // if (target.mint.length > 1) {
+                //     const tx = await transferMany({
+                //         mint: target.mint,
+                //         currentOwner: tokenOwner,
+                //         newOwner: walletAddress,
+                //     });
+                //     await completeTransactions(tx);
+                // } else if (target.mint.length === 1) {
+                //     const tx = await transfer({
+                //         mint: target.mint[0],
+                //         currentOwner: tokenOwner,
+                //         newOwner: walletAddress,
+                //     });
+                //     const connection = new Connection(
+                //         process.env.NEXT_PUBLIC_RPC_ENDPOINT as string, // https://api.devnet.solana.com/
+                //         'confirmed',
+                //     );
+                //     const signature = await signAndSendTransaction(
+                //         connection,
+                //         tx,
+                //         wallet,
+                //     );
+                //     console.log(signature);
+                // }
+                await transferSolTo(target.amount, publicKey(tokenOwner));
             }
-
             onSuccess(' Completed!');
             clear();
         } catch (e) {
