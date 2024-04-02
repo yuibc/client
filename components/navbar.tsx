@@ -33,7 +33,11 @@ import { useAtomValue } from 'jotai';
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [userInfo, setUserInfo] = useState<Partial<TInsensitiveUser>>({});
+    const [userInfo, setUserInfo] = useState<TInsensitiveUser>({
+        displayName: '',
+        email: '',
+        walletAddress: '',
+    });
     const { findById } = useUser();
     const wallet = useWallet();
     const isAuth = useAtomValue(isAuthAtom);
@@ -43,7 +47,10 @@ export const Navbar = () => {
         const id = localStorage.getItem('User');
         if (!id) return;
         findById(id)
-            .then((user) => setUserInfo(user as TInsensitiveUser))
+            .then(
+                (user: TInsensitiveUser | undefined) =>
+                    user && Object.keys(user).length > 0 && setUserInfo(user),
+            )
             .catch((e) => console.error(e));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
