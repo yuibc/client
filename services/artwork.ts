@@ -23,6 +23,7 @@ export function useArtwork(baseUrl = BASE_URL) {
         published,
         instructions,
         mint,
+        cid,
     }: Partial<TArtwork>) => {
         const walletAddress = localStorage.getItem('User');
         if (!walletAddress) return;
@@ -43,6 +44,7 @@ export function useArtwork(baseUrl = BASE_URL) {
                 published,
                 instructions,
                 mint,
+                cid,
             }),
         });
         return await res.text();
@@ -89,6 +91,16 @@ export function useArtwork(baseUrl = BASE_URL) {
         return await res.text();
     };
 
+    const deleteArtwork = async (id: number) => {
+        const res = await fetch(`${baseUrl}/artwork/${id}/burn`, {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.text();
+    };
+
     return {
         artworks,
         add,
@@ -96,5 +108,6 @@ export function useArtwork(baseUrl = BASE_URL) {
         allArtworks,
         publish,
         updatePrice,
+        deleteArtwork,
     };
 }

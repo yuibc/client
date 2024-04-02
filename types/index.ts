@@ -17,6 +17,7 @@ export type ArtBlockProps = {
     creator: string;
     mint: PublicKey;
     walletAddress: string;
+    cid: string;
 };
 
 export type TArtBlock = ArtBlockProps;
