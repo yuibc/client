@@ -66,6 +66,8 @@ export default function ArtworkManagement() {
                                     currency="$"
                                     creator={artwork.creator}
                                     published={artwork.published}
+                                    mint={artwork.mint}
+                                    cid={artwork.cid}
                                 />
                             ))}
                             <label
