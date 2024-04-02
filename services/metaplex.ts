@@ -1,5 +1,6 @@
 import {
     TokenStandard,
+    burnV1,
     createNft,
     createV1,
     mintV1,
@@ -19,6 +20,12 @@ type TMintData = {
     name: string;
     uri: string;
     walletAddress: string;
+};
+
+type TTransfer = {
+    mint: PublicKey;
+    tokenOwner: Signer;
+    destinationOwner: PublicKey;
 };
 
 export function useMetaplexUmi() {
@@ -66,12 +73,6 @@ export function useMetaplexUmi() {
             tokenOwner: publicKey(walletAddress),
         });
 
-    type TTransfer = {
-        mint: PublicKey;
-        tokenOwner: Signer;
-        destinationOwner: PublicKey;
-    };
-
     const transferOwnership = (
         umi: Umi,
         { mint, tokenOwner, destinationOwner }: TTransfer,
@@ -84,11 +85,20 @@ export function useMetaplexUmi() {
             tokenStandard: TokenStandard.NonFungible,
         });
 
+    const burnNft = async (umi: Umi, mint: PublicKey) =>
+        await burnV1(umi, {
+            mint,
+            authority: umi.identity,
+            tokenOwner: umi.identity.publicKey,
+            tokenStandard: TokenStandard.NonFungible,
+        }).sendAndConfirm(umi);
+
     return {
         mint,
         nft,
         createAccount,
         mintToken,
         transferOwnership,
+        burnNft,
     };
 }
