@@ -17,14 +17,17 @@ export default function Creators() {
                     <CreatorBlock
                         displayName="@User_Name_123"
                         followerCount={10000}
+                        rankingBorder="first"
                     />
                     <CreatorBlock
                         displayName="@User_Name_123"
                         followerCount={6000}
+                        rankingBorder="second"
                     />
                     <CreatorBlock
                         displayName="@User_Name_123"
                         followerCount={4000}
+                        rankingBorder="third"
                     />
                 </div>
             </div>

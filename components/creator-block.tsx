@@ -10,7 +10,10 @@ export const CreatorBlock = ({
     onFollow,
     noFollowButton,
     borderless,
-}: Partial<CreatorBlockProps>) => {
+    rankingBorder,
+}: Partial<
+    CreatorBlockProps & { rankingBorder: 'first' | 'second' | 'third' }
+>) => {
     const formatThousand = (total: number) =>
         total > 1000 ? `${total * 0.001}k` : total;
     const formatFollower = (total: number) =>
@@ -22,6 +25,12 @@ export const CreatorBlock = ({
                 ['flex justify-evenly items-center p-5 gap-3']: true,
                 ['border-1 border-default-100 rounded-md']: !borderless,
                 ['border-0 rounded-md']: borderless,
+                ['border-5 border-indigo-500 rounded-md']:
+                    rankingBorder === 'first',
+                ['border-3 border-pink-600 rounded-md']:
+                    rankingBorder === 'second',
+                ['border-1 border-yellow-700 rounded-md']:
+                    rankingBorder === 'third',
             })}>
             <div>
                 <Avatar
