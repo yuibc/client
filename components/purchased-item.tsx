@@ -34,7 +34,12 @@ export const PurchasedItem = ({
             <CardBody>
                 <div className="grid grid-cols-12 gap-4 items-center justify-center">
                     <div className="relative col-span-3">
-                        <Image width={150} shadow="lg" src={artworkUrl} />
+                        <Image
+                            alt={artworkTitle}
+                            width={150}
+                            shadow="lg"
+                            src={artworkUrl}
+                        />
                     </div>
 
                     <div className="flex flex-col col-span-3">

@@ -28,6 +28,7 @@ export default function Explore() {
     };
     useEffect(() => {
         if (artworks.length === 0) fetchPublishedArtworks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
