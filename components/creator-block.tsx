@@ -2,6 +2,8 @@ import { CreatorBlockProps } from '@/types';
 import { Avatar, Button } from '@nextui-org/react';
 import { FlowbiteUsersSolidIcon } from './icons';
 import clsx from 'clsx';
+import { useAtomValue } from 'jotai';
+import { isAuthAtom } from '@/services';
 
 export const CreatorBlock = ({
     avatarUrl,
@@ -11,13 +13,20 @@ export const CreatorBlock = ({
     noFollowButton,
     borderless,
     rankingBorder,
+    isLoading,
+    id,
 }: Partial<
-    CreatorBlockProps & { rankingBorder: 'first' | 'second' | 'third' }
+    CreatorBlockProps & {
+        rankingBorder: 'first' | 'second' | 'third';
+        id: number;
+        isLoading: boolean;
+    }
 >) => {
+    const isAuth = useAtomValue(isAuthAtom);
     const formatThousand = (total: number) =>
         total > 1000 ? `${total * 0.001}k` : total;
     const formatFollower = (total: number) =>
-        total < 1 ? `${total} Follower` : `${formatThousand(total)} Followers`;
+        total < 2 ? `${total} Follower` : `${formatThousand(total)} Followers`;
 
     return (
         <div
@@ -48,7 +57,12 @@ export const CreatorBlock = ({
                     </h5>
                 </span>
                 {!noFollowButton && (
-                    <Button title="Follow" onClick={onFollow} variant="flat">
+                    <Button
+                        title="Follow"
+                        onClick={onFollow}
+                        variant="flat"
+                        isDisabled={isAuth ? false : true}
+                        isLoading={isLoading}>
                         Follow
                     </Button>
                 )}
