@@ -13,11 +13,12 @@ import {
     Chip,
     Card,
     CardBody,
+    ModalHeader,
 } from '@nextui-org/react';
 import { PostModalProps, TCategory } from '@/types';
 import { Dropzone } from './dropzone';
 import {
-    isUploadedAtom,
+    artworksAtom,
     useArtwork,
     useMetaplexUmi,
     useNFTStorage,
@@ -39,17 +40,18 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const { mint, nft } = useMetaplexUmi();
     const { uploadArtwork } = useNFTStorage();
-    const { add } = useArtwork();
+    const { add, artworks } = useArtwork();
     const { categories: retrieveCategories } = useCategory();
     const umi = useUmi();
     const { onSuccess, onError } = useToast();
-    const setIsUploaded = useSetAtom(isUploadedAtom);
+    const setUploadedArtwork = useSetAtom(artworksAtom);
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (!e.target) return;
         if (!e.target.files) return;
         setFileUploaded(e.target.files[0]);
+        onSuccess('The uploaded file is available');
     };
 
     const addArtwork = async () => {
@@ -61,7 +63,11 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
 
             const signer = mint(umi);
 
-            const { url: metadata, data } = await uploadArtwork({
+            const {
+                url: metadata,
+                data,
+                ipnft,
+            } = await uploadArtwork({
                 title: title.current.value,
                 description: description.current.value,
                 owner: walletAddress,
@@ -89,20 +95,19 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                 published,
                 instructions,
                 mint: signer.publicKey,
+                cid: ipnft,
             });
+            const updatedArtworks = await artworks(walletAddress);
+            setUploadedArtwork(updatedArtworks);
             if (onClose) onClose();
             onSuccess('Uploaded new creation!');
-            setIsUploaded(true);
         } catch (e) {
             console.error(e);
             onError('Something went wrong!');
         } finally {
             setIsLoading(false);
-            setIsUploaded(false);
         }
     };
-
-    const saveAsDraft = () => {};
 
     const addCategory = (category: unknown) => {
         if (!category || (category as string).length === 0) return;
@@ -130,6 +135,7 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
     return (
         <Modal backdrop="blur" isOpen={isOpen} onClose={onClose} size="4xl">
             <ModalContent>
+                <ModalHeader>Mint your creation into NFT</ModalHeader>
                 <ModalBody className="mt-5 font-semibold">
                     <div className="grid grid-cols-12 mt-3 gap-5">
                         <span className="col-span-6 flex flex-col gap-5">
@@ -239,13 +245,6 @@ export const PostModal = ({ isOpen, onClose }: Partial<PostModalProps>) => {
                         isLoading={isLoading}
                         onPress={addArtwork}>
                         Add to your creation
-                    </Button>
-                    <Button
-                        title="check"
-                        color="secondary"
-                        variant="flat"
-                        onPress={saveAsDraft}>
-                        Save as Draft
                     </Button>
                 </ModalFooter>
             </ModalContent>

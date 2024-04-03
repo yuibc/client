@@ -54,7 +54,9 @@ export function useTransaction(umi: Umi) {
             amount: {
                 identifier: 'SOL',
                 decimals: 9,
-                basisPoints: BigInt(amount * 1_000_000_000),
+                basisPoints: BigInt(
+                    parseInt((amount * 1_000_000_000).toFixed(1)),
+                ),
             },
             source: umi.identity,
             destination,

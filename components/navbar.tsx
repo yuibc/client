@@ -24,20 +24,16 @@ import { useEffect, useState } from 'react';
 import { CartDrawer } from './cart-drawer';
 import { Badge, Chip } from '@nextui-org/react';
 import { UserDropdown } from './user-dropdown';
-import { isAuthAtom, shoppingCartAtom, useUser } from '@/services';
+import { isAuthAtom, profileAtom, shoppingCartAtom, useUser } from '@/services';
 import { TInsensitiveUser } from '@/types';
 import { Wallet } from './wallet';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 export const Navbar = () => {
     const [isLoginOpen, setLoginPopup] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [userInfo, setUserInfo] = useState<TInsensitiveUser>({
-        displayName: '',
-        email: '',
-        walletAddress: '',
-    });
+    const [userInfo, setUserInfo] = useAtom(profileAtom);
     const { findById } = useUser();
     const wallet = useWallet();
     const isAuth = useAtomValue(isAuthAtom);

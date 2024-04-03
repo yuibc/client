@@ -14,16 +14,25 @@ export function useFollow(url = BASE_URL) {
         return await res.json();
     };
 
-    const follow = async (userId: number) => {
-        const res = await fetch(`${url}/${userId}/follow`, {
+    const follow = async (id: number, userId: number) => {
+        const res = await fetch(`${url}/user/${id}/follow?userId=${userId}`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
             },
-            body: JSON.stringify({}),
         });
         return await res.text();
     };
 
-    return { followers, follow };
+    const isFollowed = async (id: number, userId: number) => {
+        const res = await fetch(`${url}/user/${id}/follow?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.text();
+    };
+
+    return { followers, follow, isFollowed };
 }

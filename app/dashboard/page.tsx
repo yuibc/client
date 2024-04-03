@@ -3,33 +3,60 @@ import { ArtBlock } from '@/components/art-block';
 import { Empty } from '@/components/empty';
 import { IconParkSolidAddPic } from '@/components/icons';
 import { PostModal } from '@/components/post-modal';
+import { PurchasedItem } from '@/components/purchased-item';
 import { SectionContent } from '@/components/section-content';
 import { toIPFSGateway } from '@/helpers';
-import { isAuthAtom, isUploadedAtom, useArtwork } from '@/services';
-import { TArtwork } from '@/types';
+import {
+    artworksAtom,
+    isAuthAtom,
+    receiptsAtom,
+    useArtwork,
+    useReceipt,
+} from '@/services';
 import { Tab, Tabs } from '@nextui-org/react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 
 export default function ArtworkManagement() {
     const [openPostModal, setPostModal] = useState(false);
-    const [artworks, setArtworks] = useState<TArtwork[]>([]);
+    const [artworks, setArtworks] = useAtom(artworksAtom);
     const isAuth = useAtomValue(isAuthAtom);
-    const isUploaded = useAtomValue(isUploadedAtom);
     const { artworks: getArtworks } = useArtwork();
+    const [purchases, setReceipts] = useAtom(receiptsAtom);
+    const { receipts } = useReceipt();
+
     const handlePostModal = () => {
         setPostModal(!openPostModal);
     };
 
+    const fetchArtworks = async () => {
+        try {
+            const walletAddress = localStorage.getItem('walletAddress');
+            if (!walletAddress) return;
+            const data = await getArtworks(walletAddress);
+            setArtworks(data);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const fetchReceipts = async () => {
+        try {
+            const userId = localStorage.getItem('User');
+            if (!userId) return;
+            const data = await receipts(parseInt(userId));
+            setReceipts(data);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     useEffect(() => {
         if (!isAuth) location.href = '/';
-        const walletAddress = localStorage.getItem('walletAddress');
-        if (!walletAddress) return;
-        getArtworks(walletAddress)
-            .then((data) => setArtworks(data))
-            .catch((e) => console.error(e));
+        fetchArtworks();
+        fetchReceipts();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuth, isUploaded]);
+    }, []);
 
     return (
         <section>
@@ -65,11 +92,14 @@ export default function ArtworkManagement() {
                                     cryptoCurrency={artwork.currency}
                                     currency="$"
                                     creator={artwork.creator}
+                                    published={artwork.published}
+                                    mint={artwork.mint}
+                                    cid={artwork.cid}
                                 />
                             ))}
                             <label
                                 htmlFor="open-post-modal"
-                                className="flex flex-col items-center justify-center w-full border-2 border-primary-300 border-dashed rounded-lg cursor-pointer bg-default-900 dark:hover:bg-default-200 dark:bg-default-100 hover:bg-default-800 dark:border-default-100 dark:hover:border-default-200">
+                                className="flex flex-col items-center justify-center w-full border-2 border-purple-300 border-dashed rounded-lg cursor-pointer bg-neutral-100 dark:hover:bg-neutral-800 dark:bg-neutral-900 hover:bg-neutral-200 dark:border-purple-500 dark:hover:border-purple-600">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <IconParkSolidAddPic size={72} />
                                     <p className="text-default-300 mt-2 font-semibold font-mono text-sm">
@@ -85,8 +115,34 @@ export default function ArtworkManagement() {
                             </label>
                         </SectionContent>
                     </Tab>
-                    <Tab key="purchased" title="Purchased">
-                        <Empty description="You haven't bought anything yet!" />
+                    <Tab
+                        key="purchased"
+                        title={`Purchased (${purchases.length})`}>
+                        {purchases.length > 0 ? (
+                            <SectionContent
+                                gridSize={1}
+                                header="Receipts"
+                                noHeader>
+                                {purchases.map((receipt, index) => (
+                                    <PurchasedItem
+                                        key={index}
+                                        amount={receipt.amount}
+                                        status={receipt.status}
+                                        artworkTitle={receipt.artworkTitle}
+                                        artworkUrl={toIPFSGateway(
+                                            receipt.artworkUrl,
+                                        )}
+                                        mint={receipt.mint}
+                                        id={receipt.id}
+                                        purchasedAt={receipt.purchasedAt}
+                                        payer={receipt.payer}
+                                        transaction={receipt.transaction}
+                                    />
+                                ))}
+                            </SectionContent>
+                        ) : (
+                            <Empty description="You haven't bought anything yet!" />
+                        )}
                     </Tab>
                     <Tab key="bookmark" title="Bookmark">
                         <Empty description="You haven't saved any artwork!" />
