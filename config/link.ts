@@ -12,7 +12,7 @@ export const communityLinks = [
     },
     {
         title: 'Twitter',
-        href: '',
+        href: 'https://twitter.com/YuiBlockchain',
         icon: TwitterIcon,
     },
     {
