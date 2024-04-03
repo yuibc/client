@@ -11,14 +11,20 @@ import {
     DropdownTrigger,
     DropdownMenu,
     DropdownItem,
+    CardFooter,
 } from '@nextui-org/react';
-import { ArtBlockProps } from '@/types';
+import { ArtBlockProps, TArtBlockExtra } from '@/types';
 import { CartIcon, PhGearSixFillIcon } from './icons';
 import { useCart } from '@/services/cart';
 import {
     addedItemsAtom,
     shoppingCartAtom,
+    useArtwork,
     useCryptoConversion,
+    useMetaplexUmi,
+    useNFTStorage,
+    useToast,
+    useUmi,
 } from '@/services';
 import { useAtom } from 'jotai';
 
@@ -33,12 +39,20 @@ export const ArtBlock = ({
     creator,
     mint,
     walletAddress,
-}: Partial<ArtBlockProps>) => {
+    published,
+    cid,
+    onClick,
+}: Partial<ArtBlockProps & TArtBlockExtra>) => {
     const { add } = useCart();
     const { solanaToUsd, calculatePrice } = useCryptoConversion();
     const [convertedPrice, setConvertedPrice] = useState('');
     const [shoppingCart, setShoppingCart] = useAtom(shoppingCartAtom);
     const [addedItems, setAddedItems] = useAtom(addedItemsAtom);
+    const { publish, deleteArtwork } = useArtwork();
+    const { onSuccess, onError } = useToast();
+    const umi = useUmi();
+    const { burnNft } = useMetaplexUmi();
+    const { deleteUploaded } = useNFTStorage();
 
     const addToCart = async () => {
         // const userId = localStorage.getItem('User');
@@ -73,6 +87,29 @@ export const ArtBlock = ({
         // await add({ user: parseInt(userId as string), artwork: id });
     };
 
+    const publishArtwork = async () => {
+        try {
+            if (!id || !cryptoPrice) return;
+            await publish(id);
+            if (published) onSuccess('Unpublished');
+            else onSuccess('Published');
+        } catch (e) {
+            onError('Cannot publish/unpublish this artwork!');
+        }
+    };
+
+    const burnArtwork = async () => {
+        try {
+            if (!id || !mint || !cid) return;
+            await burnNft(umi, mint);
+            await deleteArtwork(id);
+            await deleteUploaded(cid);
+            onSuccess('Burned');
+        } catch (e) {
+            onError("Cannot burn this artwork. There's something worng!");
+        }
+    };
+
     useEffect(() => {
         // solanaToUsd().then((data) =>
         //     setConvertedPrice(calculatePrice(data, cryptoPrice || 0.0)),
@@ -92,7 +129,9 @@ export const ArtBlock = ({
             </CardHeader>
             <CardBody className="overflow-visible py-2">
                 <h4 className="font-bold text-large my-2">{title}</h4>
-                <div className="flex items-center justify-between">
+            </CardBody>
+            <CardFooter className="overflow-visible py-2">
+                <div className="flex items-center justify-between w-full">
                     <span>
                         <p className="text-tiny uppercase font-bold">Price</p>
                         <small className="flex gap-2">
@@ -105,23 +144,35 @@ export const ArtBlock = ({
                         </small>
                     </span>
                     {isDashboardItem ? (
-                        <Dropdown>
+                        <Dropdown shadow="lg">
                             <DropdownTrigger>
                                 <Button
                                     isIconOnly
                                     size="md"
                                     className="text-sm font-semibold text-default-600 bg-default-100"
                                     startContent={<PhGearSixFillIcon />}
-                                    variant="flat"
+                                    variant="shadow"
+                                    color="primary"
                                 />
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Artblock Actions">
-                                <DropdownItem key="publish/unpublish">
-                                    Publish
+                                <DropdownItem
+                                    key="publish/unpublish"
+                                    onClick={publishArtwork}>
+                                    {published ? 'Unpublish' : 'Publish'}
                                 </DropdownItem>
-                                <DropdownItem key="edit" startContent="">
-                                    Edit
+                                <DropdownItem
+                                    key="burn-nft-artwork"
+                                    variant="flat"
+                                    color="danger"
+                                    onClick={burnArtwork}>
+                                    Burn
                                 </DropdownItem>
+                                {/* <DropdownItem */}
+                                {/*     key="edit-price" */}
+                                {/*     onClick={onClick}> */}
+                                {/*     Edit price */}
+                                {/* </DropdownItem> */}
                             </DropdownMenu>
                         </Dropdown>
                     ) : (
@@ -138,7 +189,7 @@ export const ArtBlock = ({
                         />
                     )}
                 </div>
-            </CardBody>
+            </CardFooter>
         </Card>
     );
 };

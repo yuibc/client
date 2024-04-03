@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/config/env';
-import { TInsensitiveUser, TUser } from '@/types';
+import { TCreatorResponse, TInsensitiveUser, TUser } from '@/types';
 
 export function useUser(url = BASE_URL) {
     const create = async ({
@@ -25,8 +25,14 @@ export function useUser(url = BASE_URL) {
         }
     };
 
-    const users = async () => {
-        return await fetch(`${url}/users`);
+    const users = async (): Promise<TCreatorResponse[]> => {
+        const res = await fetch(`${url}/users`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return await res.json();
     };
 
     const findById = async (
@@ -73,11 +79,30 @@ export function useUser(url = BASE_URL) {
         }
     };
 
+    const updateProfile = async (
+        walletAddress: string,
+        { email, displayName }: Omit<TInsensitiveUser, 'walletAddress'>,
+    ) => {
+        try {
+            const res = await fetch(`${url}/user/${walletAddress}/profile`, {
+                method: 'PUT',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                body: JSON.stringify({ email, displayName }),
+            });
+            return await res.text();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     return {
         create,
         users,
         findById,
         findByWalletAddress,
         findWalletAddressByDisplayName,
+        updateProfile,
     };
 }

@@ -48,7 +48,9 @@ export const SectionContent = ({
             </div>
             {limited && (
                 <div className="flex justify-end">
-                    <Link className="text-md font-semibold cursor-pointer">
+                    <Link
+                        className="text-md font-semibold cursor-pointer"
+                        href="/explore">
                         See more
                     </Link>
                 </div>

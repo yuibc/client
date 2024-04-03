@@ -26,5 +26,7 @@ export function useNFTStorage() {
         });
     };
 
-    return { uploadArtwork };
+    const deleteUploaded = async (cid: string) => await storage.delete(cid);
+
+    return { uploadArtwork, deleteUploaded };
 }
