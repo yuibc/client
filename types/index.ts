@@ -40,7 +40,7 @@ export type SectionProps = {
     icon: ReactNode;
     children: ReactNode;
     hasFilter: boolean;
-    gridSize: 3 | 4 | 5;
+    gridSize: 1 | 2 | 3 | 4 | 5;
     onClick: () => void;
     limited: boolean;
     noHeader: boolean;
@@ -64,6 +64,14 @@ export type TCreator = Omit<
     Omit<CreatorBlockProps, 'noFollowButton'>,
     'borderless'
 >;
+
+export type TCreatorResponse = {
+    id: number;
+    email: string;
+    displayName: string;
+    walletAddress: string;
+    follows: unknown[];
+};
 
 export type CartDrawerProps = {
     title: string;
@@ -130,4 +138,21 @@ export type TCart = {
 
 export type TCategory = {
     display: string;
+};
+
+export type TPurchasedItemProps = {
+    id: number;
+    payer: string;
+    artworkTitle: string;
+    artworkUrl: string;
+    mint: string;
+    amount: number;
+    purchasedAt: Date;
+    transaction: string;
+    status: 'OWNED' | 'PAID';
+};
+
+export type TProfileProps = {
+    isOpen: boolean;
+    onClose: () => void;
 };
