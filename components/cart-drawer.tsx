@@ -15,14 +15,13 @@ import {
     useUmi,
     useToast,
     useUser,
+    useReceipt,
     useShyftProvider,
 } from '@/services';
 import { useAtom, useSetAtom } from 'jotai';
-import { createNoopSigner, publicKey } from '@metaplex-foundation/umi';
+import { publicKey } from '@metaplex-foundation/umi';
 import { fixedArts } from '@/config/fixed-data';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection, Transaction, clusterApiUrl } from '@solana/web3.js';
-import { Network, ShyftSdk, signAndSendTransaction } from '@shyft-to/js';
 
 export const CartDrawer = ({
     title,
@@ -46,8 +45,10 @@ export const CartDrawer = ({
         completeTransaction,
         completeTransactions,
     } = useShyftProvider();
+    const { createReceipt } = useReceipt();
 
     type TSelectedItems = {
+        id: number;
         title: string;
         cryptoPrice: number;
         creator: string;
@@ -69,7 +70,7 @@ export const CartDrawer = ({
             const parsed: TSelectedItems = JSON.parse(selected);
             total += parsed.cryptoPrice as number;
         }
-        return total;
+        return parseFloat(total.toFixed(5));
     };
 
     const totalPrice = () =>
@@ -84,10 +85,12 @@ export const CartDrawer = ({
         try {
             setIsLoading(true);
             const walletAddress = localStorage.getItem('walletAddress');
-            if (!walletAddress) return;
+            const userId = localStorage.getItem('User');
+            if (!walletAddress && !userId) return;
 
             type TMintContent = { mint: string[]; amount: number };
             const selected = new Map<string, TMintContent>();
+            const selectedArtwork = [];
             for (const item of groupSelected) {
                 const target: TSelectedItems = JSON.parse(item);
                 const key = target.walletAddress;
@@ -104,6 +107,7 @@ export const CartDrawer = ({
                         amount: target.cryptoPrice,
                     });
                 }
+                selectedArtwork.push(target.id);
             }
 
             if (selected.size > 1) {
@@ -141,7 +145,15 @@ export const CartDrawer = ({
                 // }
                 await transferSolTo(target.amount, publicKey(tokenOwner));
             }
-            onSuccess(' Completed!');
+            for (const artworkId of selectedArtwork) {
+                await createReceipt(parseInt(userId as string), {
+                    artworkId,
+                    transaction: '',
+                });
+            }
+            onSuccess(
+                'The total SOL amount has been transferred to the seller!',
+            );
             clear();
         } catch (e) {
             console.error(e);
@@ -199,7 +211,7 @@ export const CartDrawer = ({
                                         duration: 0.1,
                                     },
                                 }}>
-                                <div className="w-[500px] bg-white dark:bg-neutral-950 rounded-lg h-screen p-1">
+                                <div className="w-[600px] bg-white dark:bg-neutral-950 rounded-lg h-screen p-1">
                                     <div className="flex justify-around items-center my-8">
                                         <h1 className="text-3xl font-semibold">
                                             {title}
@@ -234,6 +246,7 @@ export const CartDrawer = ({
                                                         item.walletAddress
                                                     }
                                                     mint={item.mint}
+                                                    id={item.id}
                                                 />
                                             ))}
                                         </CheckboxGroup>
@@ -242,13 +255,14 @@ export const CartDrawer = ({
                                     <RadioGroup
                                         label="Payment Methods"
                                         className="px-5 mt-2"
-                                        defaultValue="Crypto"
+                                        classNames={{ base: 'w-full' }}
+                                        defaultValue="solana"
                                         orientation="horizontal">
                                         <RadioV2
-                                            value="Crypto"
+                                            value="solana"
                                             className="w-full"
-                                            description="Pay with SOLANA">
-                                            Crypto
+                                            description="Pay with Cryptocurrency">
+                                            SOLANA
                                         </RadioV2>
                                         {/* <RadioV2 */}
                                         {/*     value="Visa/Debit" */}
