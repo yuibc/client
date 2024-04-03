@@ -31,3 +31,9 @@ export function groupBy(collection: Record<string, any>[], property: string) {
     }
     return result;
 }
+
+export const isCreator = (owner: string) => {
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) return false;
+    return walletAddress === owner;
+};
