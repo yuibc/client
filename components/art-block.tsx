@@ -11,6 +11,7 @@ import {
     DropdownTrigger,
     DropdownMenu,
     DropdownItem,
+    CardFooter,
 } from '@nextui-org/react';
 import { ArtBlockProps, TArtBlockExtra } from '@/types';
 import { CartIcon, PhGearSixFillIcon } from './icons';
@@ -128,7 +129,9 @@ export const ArtBlock = ({
             </CardHeader>
             <CardBody className="overflow-visible py-2">
                 <h4 className="font-bold text-large my-2">{title}</h4>
-                <div className="flex items-center justify-between">
+            </CardBody>
+            <CardFooter className="overflow-visible py-2">
+                <div className="flex items-center justify-between w-full">
                     <span>
                         <p className="text-tiny uppercase font-bold">Price</p>
                         <small className="flex gap-2">
@@ -141,14 +144,15 @@ export const ArtBlock = ({
                         </small>
                     </span>
                     {isDashboardItem ? (
-                        <Dropdown>
+                        <Dropdown shadow="lg">
                             <DropdownTrigger>
                                 <Button
                                     isIconOnly
                                     size="md"
                                     className="text-sm font-semibold text-default-600 bg-default-100"
                                     startContent={<PhGearSixFillIcon />}
-                                    variant="flat"
+                                    variant="shadow"
+                                    color="primary"
                                 />
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Artblock Actions">
@@ -185,7 +189,7 @@ export const ArtBlock = ({
                         />
                     )}
                 </div>
-            </CardBody>
+            </CardFooter>
         </Card>
     );
 };
